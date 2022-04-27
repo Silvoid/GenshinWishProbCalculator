@@ -1,126 +1,191 @@
-
-#header *
+/*generic styling*/
+*
 {
-	margin: auto;
-	width: 900px;
-	height: 50px;
+	-moz-box-sizing: border-box; 
+	-webkit-box-sizing: border-box; 
+	box-sizing: border-box; 
 }
 
-#someTitle
+div
 {
-	text-align: center;
-	/*left: 50%;*/
-}
-
-.mainform
-{
-	border: solid;
-	width: 900px;
-	height: 500px;
 	position: relative;
-	justify-items: center;
-	margin: auto;
-}
-
-.genericBox, select
-{
-	-webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-	border: hidden;
-	border-width: 0.5px;
-	-webkit-appearance: none;
-	-ms-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	background: #bababa;
-	text-align: center;
-	border-radius: 3px;
-
-	outline: none;
-	font-size: 20px;
-
-	height: 30px;
-	width: 120px;
-	
-	margin-top: 3px;
-	margin-bottom: 3px;
-
-	transition-delay: 100ms;
-}
-
-
-
-.genericBox:focus
-{
-	border-bottom-style: solid;
-	border-width: 0.5px;
-	border-color: #2f99ff;
-	background: #bcdfff;
-}
-
-#theButton
-{
-	width: 300px;
-	height: 30px;
-}
-
-#buttonDiv
-{
+	display: grid;
 	border: solid;
-	background: #aaaaaa;
-	/*border-radius: 20px;*/
-	width: 300px;
-	height: 30px;
-	
-	/*padding: 3px;*/
+	border-width: 2px;
 	margin: auto;
+	width: 100%;
+	height: 100%;
+	min-height: 10px;
+	min-width: 80px;
+	max-width: 1260px;
+	justify-content: center;
 }
 
-.resultDiv
+select
 {
-	
-	width: 400px;
-	height: 50px;
-	margin: auto;
-	padding: 0;
-	
-	background: #2a2a2a;
-}
-
-.resultDiv *
-{
-	font-family: monospace;
-	margin: auto;
-	text-align: left;
+	height: 40px;
+	width: 120px;
 }
 
 p, label
 {
-	color: #dfdfdf;
+	color: #fefefe;
+	font-size: 1.1em;
 }
 
-
-label
+/*more specific styling*/
+.header
 {
-	width:350px;
-	/*clear:left;*/
-	text-align:right;
-	margin-left: 0px;
-	padding-right:10px;
-	color: #ffffff;
-	display: inline-block;
+	min-height: 10px;
+	max-height: 100px;
+	background-color: #2365AB;
+}
+
+.maindiv
+{
+	min-width: 1200px;
+	max-width: 1200px;
+	min-height: 100px;
+	max-height: 1200px;
+}
+
+.mainform
+{
+	min-width: 1200px;
+	grid-template-columns: 5fr 3fr;
+	grid-template-rows: 8fr 1fr;
+	grid-template-areas: "inputs output"
+	                     "inputs button";
 }
 
 .inputsDiv
 {
-	position: relative;
-	width: 505px;
-	max-width: 700px;
-	margin: auto;
-	border: solid;
-	border-width: 0.5px;
-	/*border-radius: 4px;*/
-	background: #2a2a2a;
+	grid-area: inputs;
+	margin-bottom: 10px;
+     display: grid;
+     grid-template-columns: 3fr 1fr;
+     align-items: center;
+}
+
+.inputsDiv label
+{
+	text-align: right;
+	margin-right: 20px;
+}
+
+.inputsDiv select, .inputsDiv input
+{
+
+     /**/
+     -webkit-appearance: none;
+	-ms-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border: none;
+	outline: none;
+
+	/**/
+	float: left;
+	width: 100%;
+	height: 80%;
+	min-height: 40px;
+	padding-left: 20px;
+	margin: 1px;
+
+	/**/
+	font-size: 1em;
+}
+
+input:focus, select:focus
+{
+	background-color: #d2d2ff;
+	border-top: solid;
+	border-bottom: solid;
+	border-color: #a2a2ff;
+	border-radius: 4px;
+}
+
+.buttonDiv, 
+{
+	grid-area: button;
+	background: #fffff;
+	padding: 0;
+	margin: 0;
+}
+
+#theButton
+{
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	font-size: 1em;
+}
+
+.resultDiv
+{
+	grid-area: output;
+	width: 100%;
+	height: 100%;
+
+	display: inline-block;
+	padding: 1em;
+	background-color: #141414;
+
+	font-family: monospace;
+}
+
+.resultDiv *
+{
+	margin-top: 0px;
+}
+
+.resultDiv p
+{
+	font-size: 1.3em;
+}
+
+#result_Description
+{
+	font-size: 1.1em;
+}
+
+.someInfo
+{
+	display: inline-block;
+	background-color: #5e5e5e;
+}
+
+.someInfo p
+{
+	align-text: left;
+	left: 0%;
+	padding: 0;
+	margin: 5px;
+	width: 100%;
+	font-size: 1.1em;
+}
+
+.somethingText
+{
+	margin: 0;
+	border: none;
+
+	position: fixed;
+	text-align: right;
+	justify-content: right;
+
+	width: 300px;
+	height: 20px;
+	min-width: 10px;
+	min-height: 10px;
+	
+
+	right: 0%;
+	bottom: 0%;
+	color: #f2f2f2;
+	opacity: 0.1;
 }
 

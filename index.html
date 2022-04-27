@@ -2,103 +2,121 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta http-equiv="X-UA-compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Genshin Impact Probability Calculator</title>
 	<link rel="stylesheet" href="styles.css">
+
 	<script src="data.js"></script>
+	<script src="extrascript.js"></script>
 	<script src="script.js"></script>
 </head>
 <body onload="Initialize()" style="background-color:#222222;">
-	<div id="header">
-		<h1 id="someTitle" style="color: #f2f2f2">SilverVoid's Prototype Genshin Wishing Probability Calculator</h1>
-	</div>
-	<div class="mainform">
-		<div class="inputsDiv">
-			<label for="select_beginConLevel">current constellation level</label>
-			<select name="selectBox1" class="genericBox" id="select_beginConLevel" onchange="UpdateLevels(1)">
-				<option value=0 selected>NONE</option>
-				<option value=1>C0</option>
-				<option value=2>C1</option>
-				<option value=3>C2</option>
-				<option value=4>C3</option>
-				<option value=5>C4</option>
-				<option value=6>C5</option>
-				<option value=7>C6</option>
-			</select>
-
-			<label for="select_beginRefLevel">current refinement rank</label>
-			<select name="selectBox2" class="genericBox" id="select_beginRefLevel" onchange="UpdateLevels(2)">
-				<option value=0 selected>NONE</option>
-				<option value=1>R1</option>
-				<option value=2>R2</option>
-				<option value=3>R3</option>
-				<option value=4>R4</option>
-				<option value=5>R5</option>
-			</select>
-
-
-			<label for="select_targetConLevel">target constellation level</label>
-			<select name="selectBox3" class="genericBox" id="select_targetConLevel" onchange="UpdateLevels(3)">
-				<option value=0>NONE</option>
-				<option value=1 selected>C0</option>
-				<option value=2>C1</option>
-				<option value=3>C2</option>
-				<option value=4>C3</option>
-				<option value=5>C4</option>
-				<option value=6>C5</option>
-				<option value=7>C6</option>
-			</select>
-
-			<label for="select_targetRefLevel">target refinement rank</label>
-			<select name="selectBox4" class="genericBox" id="select_targetRefLevel" onchange="UpdateLevels(4)">
-				<option value=0>NONE</option>
-				<option value=1 selected>R1</option>
-				<option value=2>R2</option>
-				<option value=3>R3</option>
-				<option value=4>R4</option>
-				<option value=5>R5</option>
-			</select>
-
-			<label for="select_CharGuaranteed">next five-star character is guaranteed?</label>
-			<select name="selectBox5" class="genericBox" id="select_CharGuaranteed" onchange="genericOnChange()">
-				<option value=0 selected>no</option>
-				<option value=1>yes</option>
-			</select>
-
-			<label for="select_WeapFiftyFifty">last five-star weapon was not a featured weapon?</label>
-			<select name="selectBox6" class="genericBox" id="select_WeapFiftyFifty" onchange="genericOnChange()">
-				<option value=0 selected>no</option>
-				<option value=1>yes</option>
-			</select>
-
-			<label for="select_EpitomPath">epitomized path status</label>
-			<select name="selectBox7" class="genericBox" id="select_EpitomPath" onchange="genericOnChange()">
-				<option value=0 selected>0/2</option>
-				<option value=1>1/2</option>
-				<option value=2>2/2</option>
-			</select>
-
-			<label for="tBox_CharPullsDone">character pulls done (current pity for next five-star)</label>
-			<input type="text" class="genericBox" id="tBox_CharPullsDone" value="0"
-				onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 1)"/>
-
-			<label for="tBox_WeapPullsDone">weapon pulls done (current pity for next five-star)</label>
-			<input type="text" class="genericBox" id="tBox_WeapPullsDone" value="0"
-			onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 2)"/>
-
-			<label for="tBox_PullsToDo">pulls to do</label>
-			<input type="text" class="genericBox" id="tBox_PullsToDo" value="1"
-				onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 3)"/>
+	<div class = "maindiv">
+		<div class="header">
+			<h1 id="someTitle" style="color: #f2f2f2">(Prototype) Genshin Wishing Probability Calculator</h1>
 		</div>
+		<div class="mainform">
+			<div class="inputsDiv">
+				<label for="select_beginConLevel">current constellation level</label>
+				<select name="selectBox1" class="genericBox" id="select_beginConLevel" onchange="UpdateLevels(1)">
+					<option value=0 selected>NONE</option>
+					<option value=1>C0</option>
+					<option value=2>C1</option>
+					<option value=3>C2</option>
+					<option value=4>C3</option>
+					<option value=5>C4</option>
+					<option value=6>C5</option>
+					<option value=7>C6</option>
+				</select>
 
-		<div id="buttonDiv">
-			<input type="button" id="theButton" value="Initialize" onclick="Calculate()"/>
+				<label for="select_beginRefLevel">current refinement rank</label>
+				<select name="selectBox2" class="genericBox" id="select_beginRefLevel" onchange="UpdateLevels(2)">
+					<option value=0 selected>NONE</option>
+					<option value=1>R1</option>
+					<option value=2>R2</option>
+					<option value=3>R3</option>
+					<option value=4>R4</option>
+					<option value=5>R5</option>
+				</select>
+
+
+				<label for="select_targetConLevel">target constellation level</label>
+				<select name="selectBox3" class="genericBox" id="select_targetConLevel" onchange="UpdateLevels(3)">
+					<option value=0>NONE</option>
+					<option value=1 selected>C0</option>
+					<option value=2>C1</option>
+					<option value=3>C2</option>
+					<option value=4>C3</option>
+					<option value=5>C4</option>
+					<option value=6>C5</option>
+					<option value=7>C6</option>
+				</select>
+
+				<label for="select_targetRefLevel">target refinement rank</label>
+				<select name="selectBox4" class="genericBox" id="select_targetRefLevel" onchange="UpdateLevels(4)">
+					<option value=0>NONE</option>
+					<option value=1 selected>R1</option>
+					<option value=2>R2</option>
+					<option value=3>R3</option>
+					<option value=4>R4</option>
+					<option value=5>R5</option>
+				</select>
+
+				<label for="select_CharGuaranteed">next five-star character is guaranteed?</label>
+				<select name="selectBox5" class="genericBox" id="select_CharGuaranteed" onchange="genericOnChange()">
+					<option value=0 selected>no</option>
+					<option value=1>yes</option>
+				</select>
+
+				<label for="select_WeapFiftyFifty">last five-star weapon was not a featured weapon?</label>
+				<select name="selectBox6" class="genericBox" id="select_WeapFiftyFifty" onchange="genericOnChange()">
+					<option value=0 selected>no</option>
+					<option value=1>yes</option>
+				</select>
+
+				<label for="select_EpitomPath">epitomized path status</label>
+				<select name="selectBox7" class="genericBox" id="select_EpitomPath" onchange="genericOnChange()">
+					<option value=0 selected>0/2</option>
+					<option value=1>1/2</option>
+					<option value=2>2/2</option>
+				</select>
+
+				<label for="tBox_CharPullsDone">character pulls done (current pity for next five-star)</label>
+				<input type="text" class="genericBox" id="tBox_CharPullsDone" value="0"
+					onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 1)"/>
+
+				<label for="tBox_WeapPullsDone">weapon pulls done (current pity for next five-star)</label>
+				<input type="text" class="genericBox" id="tBox_WeapPullsDone" value="0"
+				onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 2)"/>
+
+				<label for="tBox_PullsToDo">pulls to do</label>
+				<input type="text" class="genericBox" id="tBox_PullsToDo" value="1"
+					onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 3)"/>
+			</div>
+
+			<div class="buttonDiv">
+				<input type="button" id="theButton" value="Initialize" onclick="Calculate()"/>
+			</div>
+
+			<div class="resultDiv">
+				<p id="result">results will be displayed here</p>
+				<p id="result_OddsSuccess" style="display: none">odds for success</p>
+				<p id="result_OddsFailure" style="display: none">odds for failure</p>
+				<p id="result_Description" style="display: none">odds for failure</p>
+			</div>
+
 			
 		</div>
-		<div class="resultDiv">
-			<p id="result">RESULT WILL BE DISPLAYED HERE</p>
-			<p id="result_OddsSuccess" style="display: none">odds for success</p>
-			<p id="result_OddsFailure" style="display: none">odds for failure</p>
+		<div class="someInfo">
+			<p>Some information in this area.</p>
+			<p>This calculator was made based on information from <a href="https://www.hoyolab.com/article/497840">https://www.hoyolab.com/article/497840</a>.</p>
+			<p>If you set the calculator for more pulls than necessary, it internally minimizes it to the sufficient amount.</p>
+			<p>Although some effort went into making this, this is likely not perfect in the sense of bugs possibly being missed, and errors.</p>
 		</div>
+	</div>
+	<div class="somethingText">
+		This calculator was made by "SilverVoid"
 	</div>
 </body>
 </html>

@@ -1,5 +1,6 @@
-// Things to optimize:
-// (1) Don't calculate unused numbers.
+// Things unoptimized:
+// (1) Calculating beyond what gets used.
+// 
 
 var initialized = false;
 var resultClean = true;
@@ -9,21 +10,21 @@ var targetRef = Number(1); // R1 is 1. R5 is 5.
 var inputPullsToDo = Number(1);
 var maxPullsToDo = Number(420);
 
-
-function addCommas(targetThing) {
-    return String(targetThing).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-
-function genericOnChange()
+function DoCleanResults()
 {
 	if(resultClean == false)
 	{
-		document.getElementById('result').innerHTML = "RESULT WILL BE DISPLAYED HERE";
+		document.getElementById('result').innerHTML = "results will be displayed here";
 		document.getElementById('result_OddsSuccess').style.display = "none";
 		document.getElementById('result_OddsFailure').style.display = "none";
+		document.getElementById('result_Description').style.display = "none";
 		resultClean = true;
 	}
+}
+
+function genericOnChange()
+{
+	DoCleanResults();
 }
 
 function Initialize()
@@ -59,16 +60,6 @@ function Initialize()
 	document.getElementById("theButton").value = "Calculate";
 }
 
-
-
-function DoRound(x, y)
-{
-	var factorOfTen = Math.pow(10, y);
-	return Math.round(x * factorOfTen) / factorOfTen;
-}
-
-
-
 function genericNumCheck(theObject, maxNumberType)
 {	
 	if(theObject.value != null && theObject.value != "")
@@ -88,8 +79,6 @@ function genericNumCheck(theObject, maxNumberType)
 	{
 		theObject.value = "0";
 	}
-
-	
 
 	if(maxNumberType == 0)
 	{
@@ -133,11 +122,11 @@ function UpdateLevels(x)
 		{
 			if(selTarConLevel.selectedIndex <= selBgnConLevel.selectedIndex)
 			{
-				if(selTarConLevel.selectedIndex != 7)
+				if(selTarConLevel.selectedIndex < 7)
 				{
-					selTarConLevel.selectedIndex = selBgnConLevel.selectedIndex + 1;
+					selTarConLevel.selectedIndex = Math.min(7,selBgnConLevel.selectedIndex + 1);
 				}
-				else if(selTarConLevel.selectedIndex == 7)
+				if(selTarConLevel.selectedIndex >= 7)
 				{
 					selBgnConLevel.selectedIndex = 6;
 				}
@@ -149,7 +138,7 @@ function UpdateLevels(x)
 			{
 				if(selBgnConLevel.selectedIndex != 0)
 				{
-					selBgnConLevel.selectedIndex = selTarConLevel.selectedIndex - 1;
+					selBgnConLevel.selectedIndex = Math.max(0, selTarConLevel.selectedIndex - 1);
 				}
 			}
 		}
@@ -163,11 +152,11 @@ function UpdateLevels(x)
 		{
 			if(selTarRefLevel.selectedIndex <= selBgnRefLevel.selectedIndex)
 			{
-				if(selTarRefLevel.selectedIndex != 5)
+				if(selTarRefLevel.selectedIndex < 5)
 				{
-					selTarRefLevel.selectedIndex = selBgnRefLevel.selectedIndex + 1;
+					selTarRefLevel.selectedIndex = Math.min(5,selBgnRefLevel.selectedIndex + 1);
 				}
-				else if(selTarRefLevel.selectedIndex == 5)
+				if(selTarRefLevel.selectedIndex >= 5)
 				{
 					selBgnRefLevel.selectedIndex = 4;
 				}
@@ -179,7 +168,7 @@ function UpdateLevels(x)
 			{
 				if(selBgnRefLevel.selectedIndex != 0)
 				{
-					selBgnRefLevel.selectedIndex = selTarRefLevel.selectedIndex - 1;
+					selBgnRefLevel.selectedIndex = Math.max(0, selTarRefLevel.selectedIndex - 1);
 				}
 			}
 		}
@@ -190,13 +179,6 @@ function UpdateLevels(x)
 
 	genericOnChange();
 }
-
-function genericNumOnly(theTextBox)
-{
-	return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57;
-}
-
-
 
 function Calculate()
 {
@@ -381,13 +363,11 @@ function Calculate()
 				resultArray[x + y + 1] += charSuccessArray[x] * weapSuccessArray[y];
 			}
 		}
-		
-		// console.log(targetPos); // Random bug fixed? Somewhere here a number got treated as a string.
+
 		var targetConExtra = targetCon * 180;
 		var targetRefExtra = (targetRef - 1) * 231;
 		var targetPos = (targetCon - 1) * 4 + Number(targetRef - 2);
 		var maxPullsForThis = Math.max(0, targetConExtra) + Math.max(0, targetRefExtra);
-		console.log(String(targetCon) + ' ' + String(targetRef) + " | " +String(targetCon - 1) + ' ' + String(targetRef - 1));
 		for(let x = 0; x < inputPullsToDo; x++)
 		{
 			if(targetCon > 0)
@@ -405,9 +385,7 @@ function Calculate()
 			else if(targetRef > 1)
 			{
 				resultArray[x] *= dataChanceWeapFullArray[Math.min(maxPullsForThis, inputPullsToDo - x - 1)][targetRef - 2];
-				// console.log(String(maxPullsForThis)+", "+String(inputPullsToDo - x - 1));
 			}
-			// console.log("resultArray["+x+"]="+resultArray[x]);
 			result += resultArray[x];
 		}
 	}
@@ -425,18 +403,78 @@ function Calculate()
 	
 	var roundedResult = DoRound(result, 12);
 	var resultString = '~'+String(DoRound(roundedResult*100, 4))+ "%";
-	console.log("roundedResult: "+roundedResult);
-	console.log("result: "+resultString);
 	document.getElementById('result').innerHTML = "result: &quot;"+resultString+"&quot;";
 	var outTextSuccessObj = document.getElementById('result_OddsSuccess');
 	var outTextFailureObj = document.getElementById('result_OddsFailure');
+	var outTextDescripObj = document.getElementById('result_Description');
 	outTextSuccessObj.innerHTML = "odds for success: "+((roundedResult == 0 || roundedResult >= 0.5) ? "-" : "1 in ~" + addCommas(String(Math.round(1 / roundedResult))));
 	outTextFailureObj.innerHTML = "odds for failure: "+((roundedResult == 1 || (1 - roundedResult) >= 0.5) ? "-" : "1 in ~" + addCommas(Math.round(1 / (1 - roundedResult))));
+
+	var description = "";
+	if(inputPullsToDo < targetCon + targetRef + 1)
+	{
+		if(roundedResult != 0)
+		{
+			description = "... Something that shouldn't happen happened.";
+		}
+		description = "Unable to acquire the target levels with the number of pulls to do. "
+			+ inputPullsToDo + " pull"+(inputPullsToDo == 1 ? "" : "s")+" for "
+			+ String(targetCon + 1 + targetRef) + " items.";
+	}
+	else
+	{
+		// "On the character banner, currently x pity, y guaranteed. On the weapon banner, currently x1 on the epitome path and y1 guaranteed to be a featured weapon."
+		// "x2 single pulls, z chance."
+		if(targetCon >= 0)
+		{
+			description = "On the character banner, currently "
+			+ initCharPity
+			+ " pity for the next five star, and "
+			+ (charGuaranteed == true ? "is" : "is not")
+			+ " guaranteed the 50/50. ";
+		}
+		if(targetRef > 0)
+		{
+			if(targetCon < 0)
+			{
+				description = "";
+			}
+			description += "On the weapon banner, currently &quot;"
+			+ (weapEpitomPath == 0 ? "0/2" : (weapEpitomPath == 1 ? "1/2" : "2/2"))
+			+ "&quot; on the epitome path"
+			+ (weapEpitomPath == 2 ? ". " : " and "+(weapFiftyFifty == true ? "is" : "is not")+" guaranteed to be a featured weapon. ");
+		}
+		description += inputPullsToDo + " single pulls has a &quot;" + resultString + "&quot; chance for success at ";
+		if(targetCon >= 0)
+		{
+			description += String(targetCon + 1) + " specific featured five-star character"
+				+ (targetCon == 0 ? "" : "s");
+			if(targetRef > 0)
+			{
+				description += ", and ";
+			}
+			else
+			{
+				description += ".";
+			}
+		}
+		if(targetRef > 0)
+		{
+			description += String(targetRef)
+				+ " specific featured five-star weapon"
+				+ (targetRef == 1 ? "":"s")
+				+ ".";
+		}
+	}
+
+	outTextDescripObj.innerHTML = "Description: "+description;
 
 	if(resultClean == true)
 	{
 		outTextSuccessObj.style.display = "block";
 		outTextFailureObj.style.display = "block";
+		outTextDescripObj.style.display = "block";
+
 		resultClean = false;
 	}
 	console.timeEnd("calculationTime");
