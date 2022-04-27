@@ -182,7 +182,6 @@ function UpdateLevels(x)
 
 function Calculate()
 {
-	console.time("calculationTime");
 	if(initialized == false)
 	{
 		Initialize();
@@ -439,10 +438,12 @@ function Calculate()
 			{
 				description = "";
 			}
-			description += "On the weapon banner, currently &quot;"
+			description += "On the weapon banner, currently "
+			+ initWeapPity + " pity, "
+			+"&quot;"
 			+ (weapEpitomPath == 0 ? "0/2" : (weapEpitomPath == 1 ? "1/2" : "2/2"))
 			+ "&quot; on the epitome path"
-			+ (weapEpitomPath == 2 ? ". " : " and "+(weapFiftyFifty == true ? "is" : "is not")+" guaranteed to be a featured weapon. ");
+			+ (weapEpitomPath == 2 ? ". " : ", and there "+(weapFiftyFifty == true ? "is a" : "is no")+" guarantee for a featured weapon. ");
 		}
 		description += inputPullsToDo + " single pulls has a &quot;" + resultString + "&quot; chance for success at ";
 		if(targetCon >= 0)
@@ -477,5 +478,4 @@ function Calculate()
 
 		resultClean = false;
 	}
-	console.timeEnd("calculationTime");
 }
