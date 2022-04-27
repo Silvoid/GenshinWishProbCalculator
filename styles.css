@@ -1,0 +1,126 @@
+
+#header *
+{
+	margin: auto;
+	width: 900px;
+	height: 50px;
+}
+
+#someTitle
+{
+	text-align: center;
+	/*left: 50%;*/
+}
+
+.mainform
+{
+	border: solid;
+	width: 900px;
+	height: 500px;
+	position: relative;
+	justify-items: center;
+	margin: auto;
+}
+
+.genericBox, select
+{
+	-webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+	border: hidden;
+	border-width: 0.5px;
+	-webkit-appearance: none;
+	-ms-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	background: #bababa;
+	text-align: center;
+	border-radius: 3px;
+
+	outline: none;
+	font-size: 20px;
+
+	height: 30px;
+	width: 120px;
+	
+	margin-top: 3px;
+	margin-bottom: 3px;
+
+	transition-delay: 100ms;
+}
+
+
+
+.genericBox:focus
+{
+	border-bottom-style: solid;
+	border-width: 0.5px;
+	border-color: #2f99ff;
+	background: #bcdfff;
+}
+
+#theButton
+{
+	width: 300px;
+	height: 30px;
+}
+
+#buttonDiv
+{
+	border: solid;
+	background: #aaaaaa;
+	/*border-radius: 20px;*/
+	width: 300px;
+	height: 30px;
+	
+	/*padding: 3px;*/
+	margin: auto;
+}
+
+.resultDiv
+{
+	
+	width: 400px;
+	height: 50px;
+	margin: auto;
+	padding: 0;
+	
+	background: #2a2a2a;
+}
+
+.resultDiv *
+{
+	font-family: monospace;
+	margin: auto;
+	text-align: left;
+}
+
+p, label
+{
+	color: #dfdfdf;
+}
+
+
+label
+{
+	width:350px;
+	/*clear:left;*/
+	text-align:right;
+	margin-left: 0px;
+	padding-right:10px;
+	color: #ffffff;
+	display: inline-block;
+}
+
+.inputsDiv
+{
+	position: relative;
+	width: 505px;
+	max-width: 700px;
+	margin: auto;
+	border: solid;
+	border-width: 0.5px;
+	/*border-radius: 4px;*/
+	background: #2a2a2a;
+}
+
