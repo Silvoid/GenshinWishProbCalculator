@@ -1,15 +1,11 @@
-// Things unoptimized:
-// (1) Calculating beyond what gets used.
-// 
+// This code was made based on information from the following:
+// - https://www.hoyolab.com/article/497840
+// - https://genshin-impact.fandom.com/wiki/Wishes
 
-var initialized = false;
-var resultClean = true;
+var initialized = false; // Variable for knowing if data has been initialized.
+var resultClean = true;  // Variable for knowing if the result area is clean.
 
-var targetCon = Number(0); // C0 is 0. C6 is 6.
-var targetRef = Number(1); // R1 is 1. R5 is 5.
-var inputPullsToDo = Number(1);
-var maxPullsToDo = Number(420);
-
+// Generic function for cleaning the results area.
 function DoCleanResults()
 {
 	if(resultClean == false)
@@ -22,44 +18,13 @@ function DoCleanResults()
 	}
 }
 
+// Generic function to handle changes to the input.
 function genericOnChange()
 {
 	DoCleanResults();
 }
 
-function Initialize()
-{
-	// Attempt to smooth the provided data for base character distribution.
-	var sum = 0.0;
-	for(let x = 0; x < dataChanceCharArray.length; x++)
-	{
-		sum += dataChanceCharArray[x];
-	}
-	for(let x = 0; x < dataChanceCharArray.length; x++)
-	{
-		dataChanceCharArray[x] /= sum;
-	}
-
-	// Attempt to smooth the provided data for base weapon distribution.
-	
-	for(let i = 0; i < 10; i++)
-	{
-		var sum = 0.0;
-		for(let x = 0; x < dataChanceWeapArray.length; x++)
-		{
-			sum += dataChanceWeapArray[x];
-		}
-		for(let x = 0; x < dataChanceWeapArray.length; x++)
-		{
-			dataChanceWeapArray[x] /= sum;
-		}
-		dataChanceWeapArray
-	}
-
-	initialized = true;
-	document.getElementById("theButton").value = "Calculate";
-}
-
+// Generic function for enforcing that a numerical input is neither too low or too large.
 function genericNumCheck(theObject, maxNumberType)
 {	
 	if(theObject.value != null && theObject.value != "")
@@ -112,74 +77,80 @@ function genericNumCheck(theObject, maxNumberType)
 	genericOnChange();
 }
 
+// Function for checking and correcting the inputs for five-star copies.
 function UpdateLevels(x)
 {
 	if(x == 1 || x == 3)
 	{
-		var selBgnConLevel = document.getElementById("select_beginConLevel");
-		var selTarConLevel = document.getElementById("select_targetConLevel");
+		// Update for the target number of character copies.
+		let selBgnConLevel = document.getElementById("select_beginConLevel");
+		let selTarConLevel = document.getElementById("select_targetConLevel");
 		if(x == 1)
 		{
-			if(selTarConLevel.selectedIndex <= selBgnConLevel.selectedIndex)
-			{
-				if(selTarConLevel.selectedIndex < 7)
-				{
-					selTarConLevel.selectedIndex = Math.min(7,selBgnConLevel.selectedIndex + 1);
-				}
-				if(selTarConLevel.selectedIndex >= 7)
-				{
-					selBgnConLevel.selectedIndex = 6;
-				}
-			}
+			selTarConLevel.selectedIndex = Math.max(
+				selBgnConLevel.selectedIndex,
+				selTarConLevel.selectedIndex);
 		}
 		else if(x == 3)
 		{
-			if(selTarConLevel.selectedIndex <= selBgnConLevel.selectedIndex)
-			{
-				if(selBgnConLevel.selectedIndex != 0)
-				{
-					selBgnConLevel.selectedIndex = Math.max(0, selTarConLevel.selectedIndex - 1);
-				}
-			}
+			selBgnConLevel.selectedIndex = Math.min(
+				selBgnConLevel.selectedIndex,
+				selTarConLevel.selectedIndex);
 		}
-		targetCon = Number(selTarConLevel.value) - Number(selBgnConLevel.value) - 1;
+		
 	}
 	else if(x == 2 || x == 4)
 	{
-		var selBgnRefLevel = document.getElementById("select_beginRefLevel");
-		var selTarRefLevel = document.getElementById("select_targetRefLevel");
+		// Update for the target number of weapon copies.
+		let selBgnRefLevel = document.getElementById("select_beginRefLevel");
+		let selTarRefLevel = document.getElementById("select_targetRefLevel");
 		if(x == 2)
 		{
-			if(selTarRefLevel.selectedIndex <= selBgnRefLevel.selectedIndex)
-			{
-				if(selTarRefLevel.selectedIndex < 5)
-				{
-					selTarRefLevel.selectedIndex = Math.min(5,selBgnRefLevel.selectedIndex + 1);
-				}
-				if(selTarRefLevel.selectedIndex >= 5)
-				{
-					selBgnRefLevel.selectedIndex = 4;
-				}
-			}
+			selTarRefLevel.selectedIndex = Math.max(
+				selBgnRefLevel.selectedIndex,
+				selTarRefLevel.selectedIndex);
 		}
 		else if(x == 4)
 		{
-			if(selTarRefLevel.selectedIndex <= selBgnRefLevel.selectedIndex)
-			{
-				if(selBgnRefLevel.selectedIndex != 0)
-				{
-					selBgnRefLevel.selectedIndex = Math.max(0, selTarRefLevel.selectedIndex - 1);
-				}
-			}
+			selBgnRefLevel.selectedIndex = Math.min(
+				selBgnRefLevel.selectedIndex,
+				selTarRefLevel.selectedIndex);
 		}
-		targetRef = Number(selTarRefLevel.value) - Number(selBgnRefLevel.value);
 	}
-
-	maxPullsToDo = (targetCon + 1) * 180 + (targetRef) * 240;
 
 	genericOnChange();
 }
 
+// Function to call on the loading of the website or at the very start of use.
+function Initialize()
+{
+	// Attempt to smooth the provided data for base character distribution.
+	let sum = 0.0;
+	for(let x = 0; x < dataChanceCharArray.length; x++)
+	{
+		sum += dataChanceCharArray[x];
+	}
+	for(let x = 0; x < dataChanceCharArray.length; x++)
+	{
+		dataChanceCharArray[x] /= sum;
+	}
+
+	// Attempt to smooth the provided data for base weapon distribution.
+	sum = 0.0;
+	for(let x = 0; x < dataChanceWeapArray.length; x++)
+	{
+		sum += dataChanceWeapArray[x];
+	}
+	for(let x = 0; x < dataChanceWeapArray.length; x++)
+	{
+		dataChanceWeapArray[x] /= sum;
+	}
+	
+	initialized = true;
+	document.getElementById("theButton").value = "Calculate";
+}
+
+// Function for getting the probability.
 function Calculate()
 {
 	if(initialized == false)
@@ -187,118 +158,161 @@ function Calculate()
 		Initialize();
 	}
 
-	var initCharPity = Math.min(89,Math.max(0,parseInt(document.getElementById('tBox_CharPullsDone').value)));
-	var initWeapPity = Math.min(76,Math.max(0,parseInt(document.getElementById('tBox_WeapPullsDone').value)));
-	var charGuaranteed = Number(document.getElementById('select_CharGuaranteed').value) != 0;
-	var weapFiftyFifty = Number(document.getElementById('select_WeapFiftyFifty').value) != 0;
-	var weapEpitomPath = Number(document.getElementById('select_EpitomPath').value);
+	// Determine what the inputs are.
+	let inputCharPity = Math.min(89,Math.max(0,parseInt(document.getElementById('tBox_CharPullsDone').value)));
+	let inputWeapPity = Math.min(76,Math.max(0,parseInt(document.getElementById('tBox_WeapPullsDone').value)));
+	let inputCharGuaranteed = (Number(document.getElementById('select_CharGuaranteed').value) != 0);
+	let inputWeapFiftyFifty = (Number(document.getElementById('select_WeapFiftyFifty').value) != 0);
+	let inputWeapEpitomPath = Number(document.getElementById('select_EpitomPath').value);
 
-	var textBoxForPullsToDo = document.getElementById("tBox_PullsToDo");
-	maxPullsToDo = (targetCon + 1) * 180 + targetRef * 231;
-	//if() TODO: check if textbox is blank.
-	inputPullsToDo = Math.min(maxPullsToDo,Math.max(0,parseInt(textBoxForPullsToDo.value)));
+	// Determine the target number of copies.
+	let selBgnConLevel = document.getElementById("select_beginConLevel");
+	let selTarConLevel = document.getElementById("select_targetConLevel");
+	let selBgnRefLevel = document.getElementById("select_beginRefLevel");
+	let selTarRefLevel = document.getElementById("select_targetRefLevel");
+	let inputTargetCharCopies = Number(selTarConLevel.value) - Number(selBgnConLevel.value);
+	let inputTargetWeapCopies = Number(selTarRefLevel.value) - Number(selBgnRefLevel.value);
 
-	// Do pulls for character.
-	var charSuccessArray = null;
-	var chance = 0.0;
-	var remaining = 1.0;
-	if(targetCon >= 0)
+	// Determine the maximum pulls needed and the pulls to do for the target character and/or weapon copies.
+	let textBoxForPullsToDo = document.getElementById("tBox_PullsToDo");
+	let maxPullsToDo = inputTargetCharCopies * 180 + inputTargetWeapCopies * 231;
+	let inputPullsToDo = Math.min(maxPullsToDo,Math.max(0,parseInt(textBoxForPullsToDo.value)));
+
+	let elemResult = document.getElementById('result');
+
+	// Do checks if the inputs are right, and output something.
+	if(inputPullsToDo < inputTargetCharCopies + inputTargetWeapCopies)
 	{
-		charSuccessArray = new Array(180 - initCharPity - (charGuaranteed == true ? 90 : 0));
-		for(let x = 0; x < charSuccessArray.length; x++)
+		elemResult.innerHTML = inputPullsToDo + " pull"+(inputPullsToDo == 1 ? "" : "s")+" for "
+			+ String(inputTargetCharCopies + inputTargetWeapCopies) + " items is not enough.";
+		return;
+	}
+	else if(inputTargetWeapCopies + inputTargetCharCopies < 1)
+	{
+		elemResult.innerHTML = "Nothing to look for.";
+		return;
+	}
+	else if(inputPullsToDo < 1)
+	{
+		elemResult.innerHTML = "Less than one pull to do?";
+		return;
+	}
+
+	// Do pulls for character copies.
+	let arrFirstCharCopyDist = null; // Array for the distribution for the first copy of a specific featured five-star character.
+	let chance = 0.0;
+	let remaining = 1.0;
+	if(inputTargetCharCopies > 0)
+	{
+		arrFirstCharCopyDist = new Array(180       // 180 pulls is the default maximum.
+			- inputCharPity                          // Subtract the pity.
+			- (inputCharGuaranteed == true ? 90 : 0) // Subtract some number if it's guaranteed.
+		);
+		for(let x = 0; x < arrFirstCharCopyDist.length; x++)
 		{
-			charSuccessArray[x] = 0;
+			arrFirstCharCopyDist[x] = 0;
 		}
-		for(let x = 0; x < 90 - initCharPity; x++)
+		for(let x = 0; x < 90 - inputCharPity; x++)
 		{
 			chance = 0.006;
-			var pity = x + initCharPity;
+			var pity = inputCharPity + x;
 			if(pity > 72)
 			{
+				// According to a source of information, soft pity's effect starts on pull number 74.
+				// For zero-based counting, the 74th pull is 73, and that is after 72.
 				chance = Math.min(1.0, 0.06 * (pity - 72) + 0.006);
 			}
 			chance *= remaining;
 			remaining -= chance;
-			if(charGuaranteed == false)
+			if(inputCharGuaranteed == false)
 			{
 				chance *= 0.5;
 				for(let y = 0; y < 90; y++)
 				{
-					charSuccessArray[x + y + 1] += chance * dataChanceCharArray[y];
+					arrFirstCharCopyDist[x + y + 1] += chance * dataChanceCharArray[y];
 				}
 			}
-			charSuccessArray[x] += chance;
+			arrFirstCharCopyDist[x] += chance;
 		}
 	}
 
-	// Do pulls for weapon.
-	var weapSuccessArray = null;
+	// Do pulls for weapon copies.
+	let arrFirstWeapCopyDist = null;
 	chance = 0.0;
 	remaining = 1.0;
-	if(targetRef > 0)
+	if(inputTargetWeapCopies > 0)
 	{
-		weapSuccessArray = new Array(231 - weapEpitomPath * 77);
-		for(let x = 0; x < weapSuccessArray.length; x++)
+		arrFirstWeapCopyDist = new Array(231 // "77 * 3 = 231". 231 is the default maximum.
+			- inputWeapPity                    // Subtract the pity.
+			- inputWeapEpitomPath * 77);       // Subtract some number based on the status of the epitomized path.
+		for(let x = 0; x < arrFirstWeapCopyDist.length; x++)
 		{
-			weapSuccessArray[x] = 0.0;
+			arrFirstWeapCopyDist[x] = 0.0;
 		}
 
 		// Get an array for the first five-star to occur.
-		var firstSSRArray = new Array(77 - initWeapPity);		
-		for(let x = 0; x < firstSSRArray.length; x++)
+		let wepFirstSSRArray = new Array(Math.min(inputPullsToDo, 77 - inputWeapPity));
+		for(let x = 0; x < wepFirstSSRArray.length; x++)
 		{
 			chance = 0.007;
-			var pity = initWeapPity + x;
-			if(pity > 61) // 61 is the 62nd pull, so after that is the 73rd pull, where pity is active.
-				chance = Math.min(1, 0.07 * (pity - 61) + 0.007);
-			firstSSRArray[x] = chance * remaining;
-			remaining -= firstSSRArray[x];
+			let pity = inputWeapPity + x;
+			if(pity > 61)
+			{
+				// 61 is the 62nd pull, so after that is the 63rd pull, where pity is active according to a source.
+				chance = Math.min(1.0, 0.07 * (pity - 61) + 0.007);
+			}
+			wepFirstSSRArray[x] = chance * remaining;
+			remaining -= wepFirstSSRArray[x];
 		}
 
 		// Get an array for the second five-star to occur (if needed).
-		var secondSSRArray = null;
-		if(weapEpitomPath < 2)
+		let wepSecondSSRArray = null;
+		if(inputWeapEpitomPath < 2 && inputPullsToDo > 1)
 		{
-			secondSSRArray = new Array(77 + firstSSRArray.length);
-			for(let x = 0; x < secondSSRArray.length; x++)
+			let pullsForThis = Math.min(77, inputPullsToDo - 1);
+			wepSecondSSRArray = new Array(pullsForThis + wepFirstSSRArray.length);
+			for(let x = 0; x < wepSecondSSRArray.length; x++)
 			{
-				secondSSRArray[x] = 0.0;
+				wepSecondSSRArray[x] = 0.0;
 			}
-			for(let x = 0; x < firstSSRArray.length; x++)
+			for(let x = 0; x < wepFirstSSRArray.length; x++)
 			{
-				for(let y = 0; y < 77; y++)
+				for(let y = 0; y < pullsForThis; y++)
 				{
-					secondSSRArray[x + y + 1] += firstSSRArray[x] * dataChanceWeapArray[y];
+					wepSecondSSRArray[x + y + 1] += wepFirstSSRArray[x] * dataChanceWeapArray[y];
 				}
 			}
 		}
-
+		
 		// Get an array for the third five-star to occur (if needed).
-		var thirdSSRArray = null;
-		if(weapEpitomPath < 1)
+		let wepThirdSSRArray = null;
+		if(inputWeapEpitomPath < 1 && inputPullsToDo > 2)
 		{
-			thirdSSRArray = new Array(77 + secondSSRArray.length);
-			for(let x = 0; x < thirdSSRArray.length; x++)
+			let pullsForThis = Math.min(77, inputPullsToDo - 2);
+			wepThirdSSRArray = new Array(pullsForThis + wepSecondSSRArray.length);
+			for(let x = 0; x < wepThirdSSRArray.length; x++)
 			{
-				thirdSSRArray[x] = 0.0;
+				wepThirdSSRArray[x] = 0.0;
 			}
-			for(let x = 0; x < secondSSRArray.length; x++)
+			for(let x = 0; x < wepSecondSSRArray.length; x++)
 			{
-				for(let y = 0; y < 77; y++)
+				for(let y = 0; y < pullsForThis; y++)
 				{
-					thirdSSRArray[x + y + 1] += secondSSRArray[x] * dataChanceWeapArray[y];
+					wepThirdSSRArray[x + y + 1] += wepSecondSSRArray[x] * dataChanceWeapArray[y];
 				}
 			}
 		}
 
-		for(let x = 0; x < weapSuccessArray.length; x++)
+		// Start adding the necessary arrays together.
+		for(let x = 0; x < arrFirstWeapCopyDist.length; x++)
 		{
 			// Add the chance for the first SSR to be the specific five-star weapon.
-			if(x < firstSSRArray.length)
+			let sum = new Array(3);
+			if(x < wepFirstSSRArray.length)
 			{
-				weapSuccessArray[x] += firstSSRArray[x] * (weapEpitomPath == 2 ? 1.0 : (weapFiftyFifty == true ? 0.5 : 0.375));
+				arrFirstWeapCopyDist[x] += wepFirstSSRArray[x] * (inputWeapEpitomPath == 2 ? 1.0 : (inputWeapFiftyFifty == true ? 0.5 : 0.375));
 			}
-			if(secondSSRArray != null && x < secondSSRArray.length)
+			if(wepSecondSSRArray != null && x < wepSecondSSRArray.length)
 			{
 				// Add the chance for the second SSR to be the specific five-star weapon.
 				// For that to happen, the first must not be the specific five-star weapon.
@@ -308,9 +322,9 @@ function Calculate()
 				// Variation BB: First fails to be a featured weapon.
 				// "0.5 * 0.375" describes Variation A.
 				// "0.625 * (0.6 * 0.375 + 0.4 * 0.5)" describes Variation B.
-				weapSuccessArray[x] += secondSSRArray[x] * (weapEpitomPath == 1 ? (weapFiftyFifty == true ? 0.5 : 0.625) : (weapFiftyFifty == true ? 0.1875 : 0.265625));
+				arrFirstWeapCopyDist[x] += wepSecondSSRArray[x] * (inputWeapEpitomPath == 1 ? (inputWeapFiftyFifty == true ? 0.5 : 0.625) : (inputWeapFiftyFifty == true ? 0.1875 : 0.265625));
 			}
-			if(thirdSSRArray != null && x < thirdSSRArray.length)
+			if(wepThirdSSRArray != null && x < wepThirdSSRArray.length)
 			{
 				// Add the chance for the third SSR to be the specific five-star weapon.
 				// For that to happen, the first must not be the specific five-star weapon,
@@ -321,69 +335,72 @@ function Calculate()
 				// Variation BB: First fails to be a featured weapon, and then second fails.
 				// "0.5 * 0.625" describes Variation A.
 				// "0.625 * (0.6 * 0.625 + 0.4 * 0.5)" describes Variation B.
-				weapSuccessArray[x] += thirdSSRArray[x] * (weapFiftyFifty == true ? 0.3125 : 0.359375);
+				arrFirstWeapCopyDist[x] += wepThirdSSRArray[x] * (inputWeapFiftyFifty == true ? 0.3125 : 0.359375);
 			}
 		}
 	}
 
-	var result = 0.0;
-	var resultArray = charSuccessArray;
-	if(charSuccessArray == null)
+	// Output the result.
+	let result = 0.0;
+	let resultArray = arrFirstCharCopyDist;
+	if(arrFirstCharCopyDist == null)
 	{
-		if(weapSuccessArray == null)
+		// If the first character copy distribution array is null, then try to switch the result array to the weapon.
+		if(arrFirstWeapCopyDist == null)
 		{
+			// If the first weapon copy distribution array is also null, then alert and return.
 			alert("Nothing computed. No target set?");
 			return;
 		}
 
-		// Get the chance for a success at the weapon's refinement rank level.
-		resultArray = weapSuccessArray;
+		// Get the chance for a success at the weapon's refinement rank.
+		resultArray = arrFirstWeapCopyDist;
 		for(let x = 0; x < inputPullsToDo &&  x < resultArray.length; x++)
 		{
-			if(targetRef > 1)
+			if(inputTargetWeapCopies > 1)
 			{
-				resultArray[x] *= dataChanceWeapFullArray[Math.min((targetRef - 1) * 231, inputPullsToDo - x - 1)][targetRef - 2];
+				resultArray[x] *= dataChanceWeapFullArray[Math.min((inputTargetWeapCopies - 1) * 231, inputPullsToDo - x - 1)][inputTargetWeapCopies - 2];
 			}
 			result += resultArray[x];
 		}
 	}
-	else if(weapSuccessArray != null)
+	else if(arrFirstWeapCopyDist != null)
 	{
+		// If the first character copy distribution array and the first weapon copy distribution array are both not null,
+		// - calculate for a success at both.
 		resultArray = new Array(inputPullsToDo);
 		for(let x = 0; x < resultArray.length; x++)
 		{
 			resultArray[x] = 0;
 		}
-		// Start calculating for the probability of both the character constellation level and weapon refinement rank.
-		for(let x = 0; x < inputPullsToDo && x < charSuccessArray.length; x++)
+		for(let x = 0; x < inputPullsToDo && x < arrFirstCharCopyDist.length; x++)
 		{
-			for(let y = 0; x + y + 1 < inputPullsToDo && y < weapSuccessArray.length; y++)
+			for(let y = 0; x + y + 1 < inputPullsToDo && y < arrFirstWeapCopyDist.length; y++)
 			{
-				resultArray[x + y + 1] += charSuccessArray[x] * weapSuccessArray[y];
+				resultArray[x + y + 1] += arrFirstCharCopyDist[x] * arrFirstWeapCopyDist[y];
 			}
 		}
 
-		var targetConExtra = targetCon * 180;
-		var targetRefExtra = (targetRef - 1) * 231;
-		var targetPos = (targetCon - 1) * 4 + Number(targetRef - 2);
-		var maxPullsForThis = Math.max(0, targetConExtra) + Math.max(0, targetRefExtra);
+		let pullsForMoreCharCopies = (inputTargetCharCopies - 1) * 180;
+		let pullsForMoreWeapCopies = (inputTargetWeapCopies - 1) * 231;
+		let targetPos = (inputTargetCharCopies - 2) * 4 + Number(inputTargetWeapCopies - 2);
+		let maxPullsForMoreCopies = Math.max(0, pullsForMoreCharCopies) + Math.max(0, pullsForMoreWeapCopies);
 		for(let x = 0; x < inputPullsToDo; x++)
 		{
-			if(targetCon > 0)
+			if(inputTargetCharCopies > 1)
 			{
-				if(targetRef > 1)
+				if(inputTargetWeapCopies > 1)
 				{
-					
-					resultArray[x] *= dataCombinedArray[Math.min(maxPullsForThis, inputPullsToDo - x - 1)][targetPos];
+					resultArray[x] *= dataCombinedArray[Math.min(maxPullsForMoreCopies, inputPullsToDo - x - 1)][targetPos];
 				}
 				else
 				{
-					resultArray[x] *= dataChanceCharFullArray[Math.min(maxPullsForThis, inputPullsToDo - x - 1)][targetCon - 1];
+					resultArray[x] *= dataChanceCharFullArray[Math.min(maxPullsForMoreCopies, inputPullsToDo - x - 1)][inputTargetCharCopies - 2];
 				}
 			}
-			else if(targetRef > 1)
+			else if(inputTargetWeapCopies > 1)
 			{
-				resultArray[x] *= dataChanceWeapFullArray[Math.min(maxPullsForThis, inputPullsToDo - x - 1)][targetRef - 2];
+				resultArray[x] *= dataChanceWeapFullArray[Math.min(maxPullsForMoreCopies, inputPullsToDo - x - 1)][inputTargetWeapCopies - 2];
 			}
 			result += resultArray[x];
 		}
@@ -392,83 +409,69 @@ function Calculate()
 	{
 		for(let x = 0; x < inputPullsToDo && x < resultArray.length; x++)
 		{
-			if(targetCon > 0)
+			if(inputTargetCharCopies > 1)
 			{
-				resultArray[x] *= dataChanceCharFullArray[Math.min(targetCon * 180, inputPullsToDo - x - 1)][targetCon - 1];
+				resultArray[x] *= dataChanceCharFullArray[Math.min((inputTargetCharCopies - 1) * 180, inputPullsToDo - x - 1)][inputTargetCharCopies - 2];
 			}
 			result += resultArray[x];
 		}
 	}
 	
-	var roundedResult = DoRound(result, 12);
-	var resultString = '~'+String(DoRound(roundedResult*100, 4))+ "%";
-	document.getElementById('result').innerHTML = "result: &quot;"+resultString+"&quot;";
-	var outTextSuccessObj = document.getElementById('result_OddsSuccess');
-	var outTextFailureObj = document.getElementById('result_OddsFailure');
-	var outTextDescripObj = document.getElementById('result_Description');
+	let roundedResult = DoRound(result, 12); // 12 digits seem to be most stable enough.
+	let resultString = '~' + String(DoRound(roundedResult * 100, 4))+ "%";
+	elemResult.innerHTML = "result: &quot;"+resultString+"&quot;";
+	let outTextSuccessObj = document.getElementById('result_OddsSuccess');
+	let outTextFailureObj = document.getElementById('result_OddsFailure');
+	let outTextDescripObj = document.getElementById('result_Description');
 	outTextSuccessObj.innerHTML = "odds for success: "+((roundedResult == 0 || roundedResult >= 0.5) ? "-" : "1 in ~" + addCommas(String(Math.round(1 / roundedResult))));
 	outTextFailureObj.innerHTML = "odds for failure: "+((roundedResult == 1 || (1 - roundedResult) >= 0.5) ? "-" : "1 in ~" + addCommas(Math.round(1 / (1 - roundedResult))));
 
-	var description = "";
-	if(inputPullsToDo < targetCon + targetRef + 1)
+	let description = "";
+	// "On the character banner, currently x pity, y guaranteed. On the weapon banner, currently x1 on the epitome path and y1 guaranteed to be a featured weapon."
+	// "x2 single pulls, z chance."
+	if(inputTargetCharCopies > 0)
 	{
-		if(roundedResult != 0)
-		{
-			description = "... Something that shouldn't happen happened.";
-		}
-		description = "Unable to acquire the target levels with the number of pulls to do. "
-			+ inputPullsToDo + " pull"+(inputPullsToDo == 1 ? "" : "s")+" for "
-			+ String(targetCon + 1 + targetRef) + " items.";
+		description = "On the character banner, currently "
+		+ inputCharPity
+		+ " pity for the next five star, and "
+		+ (inputCharGuaranteed == true ? "is" : "is not")
+		+ " guaranteed the 50/50. ";
 	}
-	else
+	if(inputTargetWeapCopies > 0)
 	{
-		// "On the character banner, currently x pity, y guaranteed. On the weapon banner, currently x1 on the epitome path and y1 guaranteed to be a featured weapon."
-		// "x2 single pulls, z chance."
-		if(targetCon >= 0)
+		if(inputTargetCharCopies < 1)
 		{
-			description = "On the character banner, currently "
-			+ initCharPity
-			+ " pity for the next five star, and "
-			+ (charGuaranteed == true ? "is" : "is not")
-			+ " guaranteed the 50/50. ";
+			description = "";
 		}
-		if(targetRef > 0)
+		description += "On the weapon banner, currently "
+		+ inputWeapPity + " pity, "
+		+"&quot;"
+		+ (inputWeapEpitomPath == 0 ? "0/2" : (inputWeapEpitomPath == 1 ? "1/2" : "2/2"))
+		+ "&quot; on the epitome path"
+		+ (inputWeapEpitomPath == 2 ? ". " : ", and there "+(inputWeapFiftyFifty == true ? "is a" : "is no")+" guarantee for a featured weapon. ");
+	}
+	description += inputPullsToDo + " single pull" + (inputPullsToDo == 1 ? " has" : "s have") + " a &quot;" + resultString + "&quot; chance for success at ";
+	if(inputTargetCharCopies > 0)
+	{
+		description += String(inputTargetCharCopies) + " specific featured five-star character"
+			+ (inputTargetCharCopies == 1 ? "" : "s");
+		if(inputTargetWeapCopies > 0)
 		{
-			if(targetCon < 0)
-			{
-				description = "";
-			}
-			description += "On the weapon banner, currently "
-			+ initWeapPity + " pity, "
-			+"&quot;"
-			+ (weapEpitomPath == 0 ? "0/2" : (weapEpitomPath == 1 ? "1/2" : "2/2"))
-			+ "&quot; on the epitome path"
-			+ (weapEpitomPath == 2 ? ". " : ", and there "+(weapFiftyFifty == true ? "is a" : "is no")+" guarantee for a featured weapon. ");
+			description += ", and ";
 		}
-		description += inputPullsToDo + " single pulls has a &quot;" + resultString + "&quot; chance for success at ";
-		if(targetCon >= 0)
+		else
 		{
-			description += String(targetCon + 1) + " specific featured five-star character"
-				+ (targetCon == 0 ? "" : "s");
-			if(targetRef > 0)
-			{
-				description += ", and ";
-			}
-			else
-			{
-				description += ".";
-			}
-		}
-		if(targetRef > 0)
-		{
-			description += String(targetRef)
-				+ " specific featured five-star weapon"
-				+ (targetRef == 1 ? "":"s")
-				+ ".";
+			description += ".";
 		}
 	}
-
-	outTextDescripObj.innerHTML = "Description: "+description;
+	if(inputTargetWeapCopies > 0)
+	{
+		description += String(inputTargetWeapCopies)
+			+ " specific featured five-star weapon"
+			+ (inputTargetWeapCopies == 1 ? "":"s")
+			+ ".";
+	}
+	outTextDescripObj.innerHTML = "Description: " + description;
 
 	if(resultClean == true)
 	{

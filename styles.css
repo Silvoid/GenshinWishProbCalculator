@@ -1,4 +1,6 @@
-/*generic styling*/
+/* --------------- */
+/* generic styling */
+/* --------------- */
 *
 {
 	-moz-box-sizing: border-box; 
@@ -11,14 +13,12 @@ div
 	position: relative;
 	display: grid;
 	border: solid;
-	border-width: 2px;
+	border-width: 1px;
 	margin: auto;
 	width: 100%;
 	height: 100%;
-	min-height: 10px;
-	min-width: 80px;
-	max-width: 1260px;
 	justify-content: center;
+	background-color: #222222;
 }
 
 select
@@ -33,12 +33,28 @@ p, label
 	font-size: 1.1em;
 }
 
-/*more specific styling*/
+a
+{
+	color: #aeaeae;
+}
+
+/* --------------------  */
+/* more specific styling */
+/* --------------------  */
+
+/*the general divs*/
 .header
 {
-	min-height: 10px;
-	max-height: 100px;
+	min-height: 70px;
+	max-height: 70px;
 	background-color: #2365AB;
+	padding: 10px;
+}
+
+.header *
+{
+	margin: auto;
+	text-align: center;
 }
 
 .maindiv
@@ -61,21 +77,24 @@ p, label
 .inputsDiv
 {
 	grid-area: inputs;
-	margin-bottom: 10px;
+}
+
+.inputsDivDiv
+{
+	margin: 0px;
      display: grid;
      grid-template-columns: 3fr 1fr;
      align-items: center;
 }
 
-.inputsDiv label
+.inputsDivDiv label
 {
 	text-align: right;
 	margin-right: 20px;
 }
 
-.inputsDiv select, .inputsDiv input
+.inputsDivDiv select, .inputsDivDiv input
 {
-
      /**/
      -webkit-appearance: none;
 	-ms-appearance: none;
@@ -105,6 +124,7 @@ input:focus, select:focus
 	border-radius: 4px;
 }
 
+/* the button */
 .buttonDiv, 
 {
 	grid-area: button;
@@ -124,6 +144,7 @@ input:focus, select:focus
 	font-size: 1em;
 }
 
+/* results */
 .resultDiv
 {
 	grid-area: output;
@@ -152,22 +173,76 @@ input:focus, select:focus
 	font-size: 1.1em;
 }
 
+/* extra information */
 .someInfo
 {
-	display: inline-block;
-	background-color: #5e5e5e;
+	display: grid;
+	grid-template-columns:  1fr 1fr;
+	grid-template-rows: 1fr 3fr 3fr;
+	grid-template-areas: "headerPara headerPara"
+					 "howWork howWork"
+					 "gitRepoInfo infoReferences";
+
+	border-width: 5px;
+	padding: 20px;
+
+	min-height: 500px;
+	max-height: 500px;
+	background: #2a2a2a;
 }
 
-.someInfo p
+
+.someInfo div
+{
+	margin: 0;
+	padding: 0;
+}
+
+.references, .workHow, .gitRepoInfo
+{
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+
+.someInfo p, .references p, .workHow p, .gitRepoInfo p
 {
 	align-text: left;
-	left: 0%;
-	padding: 0;
-	margin: 5px;
+	padding: 5px;
+	margin: 0px;
 	width: 100%;
-	font-size: 1.1em;
+	font-size: 1.0em;
 }
 
+.references
+{
+	grid-area: infoReferences;
+}
+
+.workHow
+{
+	grid-area: howWork;
+}
+
+.gitRepoInfo
+{
+	grid-area: gitRepoInfo;
+}
+
+#someInfoParagraphHeader
+{
+	grid-area: headerPara;
+	font-size: 1.5em;
+	margin: auto;
+}
+
+#paraA, #paraB, #paraC
+{
+	font-size: 1.25em;
+	margin: 0;
+}
+
+/**/
 .somethingText
 {
 	margin: 0;
@@ -177,11 +252,14 @@ input:focus, select:focus
 	text-align: right;
 	justify-content: right;
 
+	font-size: 1vmax;
 	width: 300px;
 	height: 20px;
-	min-width: 10px;
-	min-height: 10px;
-	
+	transform: translateY(-0.5vmax);
+	min-width: 21vw;
+	min-height: 1.25vh;
+	max-width: 21vw;
+	max-height: 1.25vh;
 
 	right: 0%;
 	bottom: 0%;
