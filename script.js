@@ -448,7 +448,7 @@ function Calculate()
 		+"&quot;"
 		+ (inputWeapEpitomPath == 0 ? "0/2" : (inputWeapEpitomPath == 1 ? "1/2" : "2/2"))
 		+ "&quot; on the epitomized path"
-		+ (inputWeapEpitomPath == 2 ? ". " : ", and there "+(inputWeapFiftyFifty == true ? "is an" : "is no")+" immediate guarantee for a featured weapon. ");
+		+ (inputWeapEpitomPath == 2 ? ". " : ", and there "+(inputWeapFiftyFifty == true ? "is an" : "is no")+" guarantee for a quick featured weapon. ");
 	}
 	description += inputPullsToDo + " single pull" + (inputPullsToDo == 1 ? " has" : "s have") + " a &quot;" + resultString + "&quot; chance for success at ";
 	if(inputTargetCharCopies > 0)

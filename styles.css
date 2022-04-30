@@ -77,11 +77,15 @@ a
 .inputsDiv
 {
 	grid-area: inputs;
+	border-width: 2px;
+	border-right-width: 4px;
 }
 
 .inputsDivDiv
 {
 	margin: 0px;
+	border-width: 2px;
+
      display: grid;
      grid-template-columns: 3fr 1fr;
      align-items: center;
@@ -136,12 +140,17 @@ input:focus, select:focus
 #theButton
 {
 	position: absolute;
-	margin: 0;
+	margin: 0px;
 	padding: 0;
 	display: block;
 	width: 100%;
 	height: 100%;
 	font-size: 1em;
+
+	border: solid;
+	border-color: #505050;
+	border-width: 2px;
+	outline: none;
 }
 
 /* results */
@@ -153,7 +162,8 @@ input:focus, select:focus
 
 	display: inline-block;
 	padding: 1em;
-	background-color: #141414;
+	border-color: #5a5a5a;
+	background-color: #101010;
 
 	font-family: monospace;
 }
@@ -247,21 +257,27 @@ input:focus, select:focus
 .somethingText
 {
 	margin: 0;
+	padding: 0;
 	border: none;
 
 	position: fixed;
-	text-align: right;
+	
+	background: none;
 	justify-content: right;
+	padding-right: 0.5vw;
 
-	font-size: 1.25vmax;
-	transform: translateY(-0.5vmax);
 	min-width: 25vw;
+	min-height: 3vh;
 	max-width: 25vw;
-	min-height: 1.5vh;
-	max-height: 1.5vh;
+	max-height: 3vh;
 
-	right: 0%;
-	bottom: 0%;
-	color: #f2f2f2;
+	right: 0;
+	bottom: 0;
+}
+
+.somethingText p
+{
+	margin: auto;
+	font-size: 1.0vmax;
 	opacity: 0.1;
 }
