@@ -1,5 +1,5 @@
 function addCommas(targetThing) {
-    return String(targetThing).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return targetThing.toLocaleString('fullwide', {useGrouping:false}).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 function DoRound(x, y)

@@ -178,13 +178,14 @@ input:focus, select:focus
 {
 	display: grid;
 	grid-template-columns:  1fr 1fr;
-	grid-template-rows: 1fr 3fr 3fr;
+	grid-template-rows: 1fr 4fr 3fr;
 	grid-template-areas: "headerPara headerPara"
 					 "howWork howWork"
 					 "gitRepoInfo infoReferences";
 
 	border-width: 5px;
 	padding: 20px;
+	padding-top: 0px;
 
 	min-height: 500px;
 	max-height: 500px;
@@ -252,14 +253,12 @@ input:focus, select:focus
 	text-align: right;
 	justify-content: right;
 
-	font-size: 1vmax;
-	width: 300px;
-	height: 20px;
+	font-size: 1.25vmax;
 	transform: translateY(-0.5vmax);
-	min-width: 21vw;
-	min-height: 1.25vh;
-	max-width: 21vw;
-	max-height: 1.25vh;
+	min-width: 25vw;
+	max-width: 25vw;
+	min-height: 1.5vh;
+	max-height: 1.5vh;
 
 	right: 0%;
 	bottom: 0%;

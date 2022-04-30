@@ -431,7 +431,7 @@ function Calculate()
 	// "x2 single pulls, z chance."
 	if(inputTargetCharCopies > 0)
 	{
-		description = "On the character banner, currently "
+		description = "Currently on the character banner, "
 		+ inputCharPity
 		+ " pity for the next five star, and "
 		+ (inputCharGuaranteed == true ? "is" : "is not")
@@ -443,12 +443,12 @@ function Calculate()
 		{
 			description = "";
 		}
-		description += "On the weapon banner, currently "
+		description += "Currently on the weapon banner, "
 		+ inputWeapPity + " pity, "
 		+"&quot;"
 		+ (inputWeapEpitomPath == 0 ? "0/2" : (inputWeapEpitomPath == 1 ? "1/2" : "2/2"))
-		+ "&quot; on the epitome path"
-		+ (inputWeapEpitomPath == 2 ? ". " : ", and there "+(inputWeapFiftyFifty == true ? "is a" : "is no")+" guarantee for a featured weapon. ");
+		+ "&quot; on the epitomized path"
+		+ (inputWeapEpitomPath == 2 ? ". " : ", and there "+(inputWeapFiftyFifty == true ? "is an" : "is no")+" immediate guarantee for a featured weapon. ");
 	}
 	description += inputPullsToDo + " single pull" + (inputPullsToDo == 1 ? " has" : "s have") + " a &quot;" + resultString + "&quot; chance for success at ";
 	if(inputTargetCharCopies > 0)
