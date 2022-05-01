@@ -274,32 +274,3 @@ input:focus, select:focus
 	font-size: 20px;
 	margin: 0;
 }
-
-/**/
-.somethingText
-{
-	margin: 0;
-	padding: 0;
-	border: none;
-
-	position: fixed;
-	
-	background: none;
-	justify-content: right;
-	padding-right: 0.5vw;
-
-	min-width: 25vw;
-	min-height: 3vh;
-	max-width: 25vw;
-	max-height: 3vh;
-
-	right: 0;
-	bottom: 0;
-}
-
-.somethingText p
-{
-	margin: auto;
-	font-size: 1.0vmax;
-	opacity: 0.1;
-}
