@@ -12,6 +12,7 @@
 
 	<!-- webpage info -->
 	<meta name="description" content="A calculator for calculating the probability of getting featured five-star characters and featured five-star weapons in the game known as &quot;Genshin Impact&quot;.">
+	<meta name="google-site-verification" content="3CVSP8Hakxss8OYyj7jzPrGkhtWWQKvmSV_dICHlMy8" />
 
 	<!-- some social stuff -->
 	<meta property="og:title" content="Genshin Impact Wishing Probability Calculator">
@@ -25,7 +26,7 @@
 <body onload="Initialize()" style="background-color:#111111;">
 	<div class = "maindiv">
 		<div class="header">
-			<h1 id="someTitle" style="color: #f2f2f2">Genshin Impact Wishing Probability Calculator</h1>
+			<p id="someTitle" style="color: #f2f2f2">Genshin Impact Wishing Probability Calculator</p>
 		</div>
 
 		<div class="mainform">
@@ -137,27 +138,54 @@
 			<div class="workHow">
 				<p id="paraB">How Does This Work?</p>
 				<p>
-					When calculating, when the inputs are acceptable, the calculator first creates one or two lists (arrays),
-						depending on how you choose to get character copies and/or weapon copies,
-					of the chances for which pull count the first copy would occur on. If you chose to get more than one copy,
-					it would then multiply each item in that list with the necessary pre-defined data on the cumulative chance for pull counts to obtain another copy after a clean pity,
-					which was calculated with the code uploaded to <a href="https://github.com/Silvoid/GenshinProbCalc">this github repository</a>.
-					Afterwards, it will output the result after summing each item in that list.
+					An essential idea used for this calculator is "x*y=z" 
+					where x is the probability to acquire something specifically on "pull count A", 
+					y is the probability to acquire something specifically on "pull count B", 
+					and z is the probability to acquire something on the total pull count ("pull count A" + "pull count B") through that permutation of the pull counts. 
+					Since there are multiple pairing of pull counts that add up to z, it would have to then process a summation of all the possible permutations to get the total probability for that pull count.
 				</p>
+				<p>
+					To explain the process of calculation in terms of the probabilities in wishing for featured five-star characters, 
+					when it calculates, 
+					it will first get a distribution for which pull count the first copy would occur. 
+				</p>
+				<p>
+					To compute this distribution, firstly, for each pull count, it multiplies the remaining population with the chance associated with the counter. The counter is the number of pulls since the last five-star, and the remaining population is the percent who are yet to acquire a five-star. 
+						Secondly, it will convert it to the chances for a specific featured five-star, and this is done by multiplying the chance for that pull count to be a specific five-star (a percent of a percent if not guaranteed), and accounting for the chance for a successor five-star pull to yield the specific five-star when the predecessor fails. 
+					</p>
+					<p>
+					Then, it'll go through, for each pull count in that distribution, a predefined set of data, which describes the cumulative chance for each pull count to have successfully obtained the target number of copies after a clean pity, which was calculated with the code uploaded to <a href="https://github.com/Silvoid/GenshinProbCalc">this github repository</a>, 
+						and will multiply the necessary numbers together. 
+					Finally, it sums up the distribution as needed, and returns a result.
+				</p>
+				<p>
+					The process for featured five-star weapon probabilities, 
+					though a bit more complex, 
+					has just about the same (non-exhaustive) description.
+				</p>
+				<p>
+					If both a target for featured five-star character copies is set (greater than zero to get), 
+					and a target for specific featured five-star weapon copies is set (greater than zero to get), 
+					there'll be two distributions for the first copy of each, which will be combined, before going through the predefined set of data.
+				</p>
+			</div>
+			<div class="limitations">
+				<p id="paraC">Limitations</p>
 				<p>If you set the calculator for more pulls than necessary, it internally minimizes it to the maximum amount necessary.</p>
-				<p>Due to technical limitations, the calculator can only safely have a result of 12 decimal places (in decimal, non-percent form), to mitigate the rounding errors of the higher decimal places. This means that a result with odds for success being less likely than 1 in a trillion can just be rounded to a probability of zero.</p>
+				<p>Due to technical limitations, the calculator can only safely have a result of 12 decimal places (in decimal, non-percent form), to mitigate the rounding errors of the higher decimal places. This includes meaning to say that a result with odds for success being less likely than 1 in a trillion just probably getting rounded to a probability of zero.</p>
 			</div>
 			<div class="gitRepoInfo">
-				<p id="paraC">Github Repository</p>
+				<p id="paraD">Github Repository</p>
 				<p>
 					This calculator's files are posted on github. You may see the files (and code) in 
 					<a href="https://github.com/Silvoid/GenshinWishProbCalculator">the github repository</a>.
 					If issues are found,
 					it can be posted in <a href="https://github.com/Silvoid/GenshinWishProbCalculator/issues">the issues section</a>.</p>
 			</div>
+			<p id="infoLastUpdated">Last Updated: May 1, 2022</p>
 		</div>
 	</div>
-	<!-- Some credit. This is commented out, as the name is not exactly important, not really unique, and the github repository is under the programmer/creator/author's account. -->
+	<!-- Some credit. This is commented out, as the name is not so important, not really unique, and the github repository is under the programmer/creator/author's account. -->
 	<!-- <div class="somethingText">
 		<p>This calculator was made by "SilverVoid"</p>
 	</div> -->
