@@ -17,173 +17,166 @@
 	<!-- some social stuff -->
 	<meta property="og:title" content="Genshin Impact Wishing Probability Calculator">
 	<meta property="og:description" content="A calculator for calculating the probability of getting featured five-star characters and featured five-star weapons in the game known as &quot;Genshin Impact&quot;.">
-
-	<!-- scripts -->
-	<script src="data.js"></script>
-	<script src="extrascript.js"></script>
-	<script src="script.js"></script>
 </head>
-<body onload="Initialize()" style="background-color:#111111;">
-	<div class = "maindiv">
-		<div class="header">
-			<p id="someTitle" style="color: #f2f2f2">Genshin Impact Wishing Probability Calculator</p>
-		</div>
+<body>
+    <header>
+        <h1 id="page-calculator-header" class="page-screen-title"><span class="optional">Genshin Impact </span>Wishing Probability Calculator</h1>
+    </header>
 
-		<div class="mainform">
-			<div class="inputsDiv">
-				<div class ="inputsDivDiv">
-					<label for="select_beginConLevel">current constellation level</label>
-					<select name="selectBox1" class="genericBox" id="select_beginConLevel" onchange="UpdateLevels(1)">
-						<option value=0 selected>NONE</option>
-						<option value=1>C0</option>
-						<option value=2>C1</option>
-						<option value=3>C2</option>
-						<option value=4>C3</option>
-						<option value=5>C4</option>
-						<option value=6>C5</option>
-						<option value=7>C6</option>
-					</select>
+    <section><div>
+        <section id="wc-body">
+            <section class="wc-form">
+                <div>
+                    <span class="section-text">Target<span class="optional"> Ranks</span></span>
+                </div>
+                <div class="icon-input">
+                    <img height="32" src="media/icons/five-star-character.svg" alt="Character">
+                    <select id="input-current-rank-character" name="CurrCharRank" aria-label="Current character constellations">
+                        <option value="0" selected>None</option>
+                        <option value="1">C0</option>
+                        <option value="2">C1</option>
+                        <option value="3">C2</option>
+                        <option value="4">C3</option>
+                        <option value="5">C4</option>
+                        <option value="6">C5</option>
+                        <option value="7">C6</option>
+                    </select>
+                    <img height="32" src="media/icons/arrow-right.svg" alt="To">
+                    <select id="input-target-rank-character" name="TargetCharRank" aria-label="Current weapon refinement rank">
+                        <option value="0" selected>None</option>
+                        <option value="1">C0</option>
+                        <option value="2">C1</option>
+                        <option value="3">C2</option>
+                        <option value="4">C3</option>
+                        <option value="5">C4</option>
+                        <option value="6">C5</option>
+                        <option value="7">C6</option>
+                    </select>
+                </div>
+                <div class="icon-input">
+                    <img height="32" src="media/icons/five-star-weapon.svg" alt="Weapon">
+                    <select id="input-current-rank-weapon" name="CurrWeapRank" aria-label="Current weapon refinement rank">
+                        <option value="0" selected>None</option>
+                        <option value="1">R1</option>
+                        <option value="2">R2</option>
+                        <option value="3">R3</option>
+                        <option value="4">R4</option>
+                        <option value="5">R5</option>
+                    </select>
+                    <img height="32" src="media/icons/arrow-right.svg" alt="To">
+                    <select id="input-target-rank-weapon" name="TargetWeapRank" aria-label="Target weapon refinement rank">
+                        <option value="0" selected>None</option>
+                        <option value="1">R1</option>
+                        <option value="2">R2</option>
+                        <option value="3">R3</option>
+                        <option value="4">R4</option>
+                        <option value="5">R5</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <span class="section-text">Pity System</span>
+                    <label for="input-guaranteed-character">Next <span class="optional">five-star (</span>5*<span class="optional">)</span> character?</label>
+                    <select id="input-guaranteed-character" name="CharGuarantee">
+                        <option value="false" selected>Not Guaranteed</option>
+                        <option value="true">Guaranteed</option>
+                    </select>
+                    <label for="input-character-pity">Character pulls pity?</label>
+					<input id="input-character-pity" name="PityCharPulls" class="input-number" value="" placeholder="0 out of 89">
+                    <label for="input-guaranteed-featured-weapon">Last <span class="optional">five-star (</span>5*<span class="optional">)</span> weapon?</label>
+                    <select id="input-guaranteed-featured-weapon" name="WeapFeatureGuarantee">
+                        <option value="false" selected>None</option>
+                        <option value="false">Not Featured</option>
+                        <option value="true">Featured</option>
+                    </select>
+                    <label for="input-weapons-pity">Weapon pulls pity?</label>
+					<input id="input-weapons-pity" name="PityWeapPulls" class="input-number" value="" placeholder="0 out of 76">
+                    <label for="input-guaranteed-specific-weapon">Epitomized path<span class="optional"> status</span>?</label>
+                    <select id="input-guaranteed-specific-weapon" name="WeapSpecificGuarantee">
+                        <option value="0" selected>0/2</option>
+                        <option value="1">1/2</option>
+                        <option value="2">2/2</option>
+                    </select>
+                </div>
 
-					<label for="select_beginRefLevel">current refinement rank</label>
-					<select name="selectBox2" class="genericBox" id="select_beginRefLevel" onchange="UpdateLevels(2)">
-						<option value=0 selected>NONE</option>
-						<option value=1>R1</option>
-						<option value=2>R2</option>
-						<option value=3>R3</option>
-						<option value=4>R4</option>
-						<option value=5>R5</option>
-					</select>
-				</div>
+                <div>
+                    <span class="section-text">Pulls</span>
+                    <label for="input-primogems">Primogems</label><input id="input-primogems" name="PullsPrimogems" class="input-number" value="0" placeholder="0">
+                    <label for="input-intertwined-fates">Intertwined Fates</label><input id="input-intertwined-fates" name="PullsFates" class="input-number" value="0" placeholder="0">
+                    <label for="input-starglitter">Starglitter</label><input id="input-starglitter" name="PullsStarglitter" class="input-number" value="0" placeholder="0">
+                </div>
+            </section>
+            <section class="wc-results-block">
+                <section class="wc-results">
+                    <h3 id="text-wc-results">Results are displayed here.</h3>
+                    <br>
+                    <section>
+                        <p id="text-wc-result-odds-success"></p>
+                        <p id="text-wc-result-odds-failure"></p>
+                    </section>
+                    <br>
+                    <p id="text-wc-result-description"></p>
+                </section>
+                <button id="button-wc-calculate">Calculate</button>
+            </section>
+        </section>
 
-				<div class ="inputsDivDiv">
-					<label for="select_targetConLevel">target constellation level</label>
-					<select name="selectBox3" class="genericBox" id="select_targetConLevel" onchange="UpdateLevels(3)">
-						<option value=0>NONE</option>
-						<option value=1 selected>C0</option>
-						<option value=2>C1</option>
-						<option value=3>C2</option>
-						<option value=4>C3</option>
-						<option value=5>C4</option>
-						<option value=6>C5</option>
-						<option value=7>C6</option>
-					</select>
-
-					<label for="select_targetRefLevel">target refinement rank</label>
-					<select name="selectBox4" class="genericBox" id="select_targetRefLevel" onchange="UpdateLevels(4)">
-						<option value=0>NONE</option>
-						<option value=1 selected>R1</option>
-						<option value=2>R2</option>
-						<option value=3>R3</option>
-						<option value=4>R4</option>
-						<option value=5>R5</option>
-					</select>
-				</div>
-
-				<div class="inputsDivDiv">
-					<label for="select_CharGuaranteed">next five-star character is guaranteed?</label>
-					<select name="selectBox5" class="genericBox" id="select_CharGuaranteed" onchange="genericOnChange()">
-						<option value=0 selected>no</option>
-						<option value=1>yes</option>
-					</select>
-
-					<label for="select_WeapFiftyFifty">last five-star weapon was not a featured weapon?</label>
-					<select name="selectBox6" class="genericBox" id="select_WeapFiftyFifty" onchange="genericOnChange()">
-						<option value=0 selected>no</option>
-						<option value=1>yes</option>
-					</select>
-
-					<label for="select_EpitomPath">epitomized path status</label>
-					<select name="selectBox7" class="genericBox" id="select_EpitomPath" onchange="genericOnChange()">
-						<option value=0 selected>0/2</option>
-						<option value=1>1/2</option>
-						<option value=2>2/2</option>
-					</select>
-				</div>
-
-				<div class="inputsDivDiv">
-					<label for="tBox_CharPullsDone">character pulls done (current pity for next five-star)</label>
-					<input type="text" class="genericBox" id="tBox_CharPullsDone" value="0"
-						onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 1)"/>
-
-					<label for="tBox_WeapPullsDone">weapon pulls done (current pity for next five-star)</label>
-					<input type="text" class="genericBox" id="tBox_WeapPullsDone" value="0"
-					onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 2)"/>
-
-					<label for="tBox_PullsToDo">pulls to do</label>
-					<input type="text" class="genericBox" id="tBox_PullsToDo" value="1"
-						onkeypress="return genericNumOnly(this)" onchange="genericNumCheck(this, 3)"/>
-				</div>
-			</div>
-
-			<div class="buttonDiv">
-				<input type="button" id="theButton" value="Initialize" onclick="Calculate()"/>
-			</div>
-
-			<div class="resultDiv">
-				<p id="result">results will be displayed here</p>
-				<p id="result_OddsSuccess" style="display: none">odds for success</p>
-				<p id="result_OddsFailure" style="display: none">odds for failure</p>
-				<p id="result_Description" style="display: none">odds for failure</p>
-			</div>
-		</div>
-
-		<div class="someInfo">
-			<p id="someInfoParagraphHeader">About this calculator...</p>
-			<div class="references">
-				<p id="paraA">Sources Of Information</p>
-				<p>This calculator was made based on information from
+        <section class="wc-info-block">
+            <h2>What is this, and how does this work?</h2>
+            <p>
+                This is a calculator for probabilities of successfully acquiring a target number of featured/limited five-star characters, and/or featured/limited five-star weapons from wishing in the game, Genshin Impact.
+            </p>
+            <p>
+                In a nutshell, this calculator works much like a simulator in terms of getting results, but without the random number generation, as it just iterates through the combinations/permutations of percentages (chances), multiplying and adding accordingly.
+                Per this distinction, this should qualify as a calculator rather than a simulator. While "wishing for 5-stars" has a limit that is not too large, it is thus faster, and more accurate.
+                Would you like <a id="wc-workings-info-verbose-link" href="#wc-workings-info-verbose">a more verbose answer</a>?
+            </p>
+            <div id="wc-workings-info-verbose" style="display: none;">
+                <h3>A more verbose, though not complete, description:</h3>
+                <p>An essential idea used for this calculator is "x*y=z" where x is the probability to acquire something specifically on "pull count A", y is the probability to acquire something specifically on "pull count B", and z is the probability to acquire something on the total pull count ("pull count A" + "pull count B") through that permutation of the pull counts. Since there are multiple pairings of pull counts that add up to the pull count of z, it would have to process a summation of all the possible permutations to get the total probability for that pull count.</p>
+                <p>To explain further, we shall focus on calculating for featured five-star characters. To calculate, it will first get a distribution for which pull count the first copy would occur. To compute this distribution, imagine a list of pulls going from the first and to the last. From the start, there will be a starting population of 100%, the amount that has yet to encounter success. For each pull count, there is a percentage (the chance of getting the five-star on that pull count) of that population that will succeed, and be removed from the remaining population.</p>
+                <p>When the pity gets cleaned by acquiring the first five-star, and there is more to go for, the calculator will combine what it has calculated with pre-calculated data, which describes the cumulative chance for each pull count to have successfully obtained the target number of copies after a clean pity, which was calculated with the code uploaded to this <a href="https://github.com/Silvoid/GenshinProbCalc">github repository</a>. Finally, it returns a result.</p>
+                <p>The process for featured five-star weapon probabilities, though a bit more complex, has just about the same (non-exhaustive) description.</p>
+                <p>If there are both more than zero copies to get on featured five-star characters, and specific featured five-star weapons, there'll be two distributions for the first copy of each, which will be combined, before going through the predefined set of data.</p>
+            </div>
+            <div>
+                <h2>Notes</h2>
+                <p>While there would basically be no difference between "single pulls" and "multis (ten pulls)", by technicality, the target selector for five-star characters is actually just "the number of limited five-stars to get". This means that it actually does not specify which "limited five-star" it is getting. It could be a combination of any limited five-stars that sums up to that number, and as a "multi (ten pull)" risks resetting the "pity" mechanic by a few pulls on an unintended target, it is therefore deemed necessary to clarify that this calculator accounts for "single pulls", and not "multis". Another note for this is that the target selector for the weapon does not work like the character weapon, as the pity mechanic between the two is different. A significant part, specifically the epitomized path, of the weapon pity mechanic can reset too variably.</p>
+                <p>For the current version, this calculator does not account for "return wishes", wherein "starglitter" can be acquired from pulling, and be exchanged for more pulls to be done for the target(s).</p>
+                <p>Per technical limitations, the calculator loses accuracy as a chance becomes less and less likely. Specifically, its result will be rounded to 12 decimal places (in decimal, non-percent form). This means to say that something with 1 in a trillion or less likely odds will probably just be rounded to zero.</p>
+                <p>The calculator has some set bounds for setting inputs to the necessary minimum or maximum.</p>
+            </div>
+            <div>
+                <h2>Github Repository</h2>
+                <p>
+                    This calculator's files are posted on Github. You may see the files (and code) in <a href="https://github.com/Silvoid/GenshinWishProbCalculator">the github repository</a>.
+                    If issues are found, it should be possible to post in <a href="https://github.com/Silvoid/GenshinWishProbCalculator/issues">the issues section</a>.
+                </p>
+            </div>
+            <div>
+                <h2>Sources Of Information</h2>
+                <p>
+                    This calculator was made based on information from
 					<a href="https://www.hoyolab.com/article/497840">an article by genshin-wishes.com on hoyolab</a>,
-					and <a href="https://genshin-impact.fandom.com/wiki/Wishes">a page on the fandom wiki.</a></p>	
-			</div>
-			<div class="workHow">
-				<p id="paraB">How Does This Work?</p>
-				<p>
-					An essential idea used for this calculator is "x*y=z" 
-					where x is the probability to acquire something specifically on "pull count A", 
-					y is the probability to acquire something specifically on "pull count B", 
-					and z is the probability to acquire something on the total pull count ("pull count A" + "pull count B") through that permutation of the pull counts. 
-					Since there are multiple pairings of pull counts that add up to the pull count of z, it would have to process a summation of all the possible permutations to get the total probability for that pull count.
-				</p>
-				<p>
-					To explain the process of calculation in terms of the probabilities in wishing for featured five-star characters, 
-					when it calculates, 
-					it will first get a distribution for which pull count the first copy would occur. 
-				</p>
-				<p>
-					To compute this distribution, firstly, for each pull count, it multiplies the remaining population with the chance associated with the counter. The counter is the number of pulls since the last five-star, and the remaining population is the percent who are yet to acquire a five-star. 
-						Secondly, it will convert it to the chances for a specific featured five-star, and this is done by multiplying the chance for that pull count to be a specific five-star (a percent of a percent if not guaranteed), and accounting for the chance for a successor five-star pull to yield the specific five-star when the predecessor fails. 
-					</p>
-					<p>
-					Then, it'll go through, for each pull count in that distribution, a predefined set of data, which describes the cumulative chance for each pull count to have successfully obtained the target number of copies after a clean pity, which was calculated with the code uploaded to <a href="https://github.com/Silvoid/GenshinProbCalc">this github repository</a>, 
-						and will multiply the necessary numbers together. 
-					Finally, it sums up the distribution as needed, and returns a result.
-				</p>
-				<p>
-					The process for featured five-star weapon probabilities, 
-					though a bit more complex, 
-					has just about the same (non-exhaustive) description.
-				</p>
-				<p>
-					If there are both more than zero copies to get on featured five-star characters, 
-					and specific featured five-star weapons, 
-					there'll be two distributions for the first copy of each, which will be combined, before going through the predefined set of data.
-				</p>
-			</div>
-			<div class="limitations">
-				<p id="paraC">Limitations</p>
-				<p>If you set the calculator for more pulls than necessary, it internally minimizes it to the maximum amount necessary.</p>
-				<p>Due to technical limitations, the calculator can only safely have a result of 12 decimal places (in decimal, non-percent form), to mitigate the rounding errors of the higher decimal places. This includes meaning to say that a result with odds for success being less likely than 1 in a trillion will probably just get rounded to a probability of zero.</p>
-			</div>
-			<div class="gitRepoInfo">
-				<p id="paraD">Github Repository</p>
-				<p>
-					This calculator's files are posted on github. You may see the files (and code) in 
-					<a href="https://github.com/Silvoid/GenshinWishProbCalculator">the github repository</a>.
-					If issues are found,
-					it can be posted in <a href="https://github.com/Silvoid/GenshinWishProbCalculator/issues">the issues section</a>.</p>
-			</div>
-			<p id="infoLastUpdated">Last Updated: May 1, 2022</p>
-		</div>
-	</div>
+					and <a href="https://genshin-impact.fandom.com/wiki/Wishes">a page on the fandom wiki.</a>
+                </p>
+            </div>
+            <div>
+                <hr>
+                <br>
+                <h3>Other info...</h3>
+                <p>Last Updated: October 14, 2023.</p>
+            </div>
+        </section>
+    </div></section>
+
+    <footer></footer>
+
+	
+	<!-- scripts -->
+	<script src="javascript/generic.js"></script>
+	<script src="javascript/data.js"></script>
+	<script src="javascript/style.js"></script>
+	<script src="javascript/calculator.js"></script>
 </body>
 </html>
