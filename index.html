@@ -86,8 +86,8 @@
                     <label for="input-guaranteed-featured-weapon">Last <span class="optional">five-star (</span>5*<span class="optional">)</span> weapon?</label>
                     <select id="input-guaranteed-featured-weapon" name="WeapFeatureGuarantee">
                         <option value="false" selected>None</option>
-                        <option value="false">Not Featured</option>
-                        <option value="true">Featured</option>
+                        <option value="true">Not Featured</option>
+                        <option value="false">Featured</option>
                     </select>
                     <label for="input-weapons-pity">Weapon pulls pity?</label>
 					<input id="input-weapons-pity" name="PityWeapPulls" class="input-number" value="" placeholder="0 out of 76">
@@ -141,7 +141,7 @@
             </div>
             <div>
                 <h2>Notes</h2>
-                <p>While there would basically be no difference between "single pulls" and "multis (ten pulls)", by technicality, the target selector for five-star characters is actually just "the number of limited five-stars to get". This means that it actually does not specify which "limited five-star" it is getting. It could be a combination of any limited five-stars that sums up to that number, and as a "multi (ten pull)" risks resetting the "pity" mechanic by a few pulls on an unintended target, it is therefore deemed necessary to clarify that this calculator accounts for "single pulls", and not "multis". Another note for this is that the target selector for the weapon does not work like the character weapon, as the pity mechanic between the two is different. A significant part, specifically the epitomized path, of the weapon pity mechanic can reset too variably.</p>
+                <p>While there would basically be no difference between "single pulls" and "multis (ten pulls)", by technicality, the target selector for five-star characters is actually just "the number of limited (featured) five-star characters to get". This means that it actually does not specify which "limited five-star character" it is getting. It could be a combination of any limited five-star characters that sums up to that number, and as a "multi (ten pull)" risks resetting the "pity" mechanic by a few pulls on an unintended target, it is therefore deemed necessary enough to clarify that this calculator accounts for "single pulls", and not "multis". Related to this, the target selector for the weapon does not work like the character's, as the pity mechanic between the two is different. A significant part, specifically the epitomized path, of the weapon's pity mechanic can reset too variably.</p>
                 <p>For the current version, this calculator does not account for "return wishes", wherein "starglitter" can be acquired from pulling, and be exchanged for more pulls to be done for the target(s).</p>
                 <p>Per technical limitations, the calculator loses accuracy as a chance becomes less and less likely. Specifically, its result will be rounded to 12 decimal places (in decimal, non-percent form). This means to say that something with 1 in a trillion or less likely odds will probably just be rounded to zero.</p>
                 <p>The calculator has some set bounds for setting inputs to the necessary minimum or maximum.</p>
