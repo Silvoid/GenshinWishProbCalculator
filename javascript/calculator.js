@@ -266,15 +266,15 @@ WishCalc.GetFirstDistribution = function(args)
 
 		// With how the pity works, the weapon banner caps out at 77 pulls for a 5-star.
 		// There is therefore a maximum of (77 * 2 or) 154 pulls to consider.
-		let firstDistribution = result.Weapon = new Array(154 - args.Pity.Weapon - args.EpitomizedPath * 77);
+		let firstDistribution = result.Weapon = new Array(154 - vArgs.Pity.Weapon - vArgs.EpitomizedPath * 77);
 		for(let x = 0; x < firstDistribution.length; x++) firstDistribution[x] = 0.0;
 
 		// Get an array for the first five-star to occur.
-		let wepFirstSSRArray = new Array(Math.min(args.Pulls, 77 - args.Pity.Weapon));
+		let wepFirstSSRArray = new Array(Math.min(vArgs.Pulls, 77 - vArgs.Pity.Weapon));
 		for(let x = 0; x < wepFirstSSRArray.length; x++)
 		{
 			chance = 0.007;
-			let pity = args.Pity.Weapon + x;
+			let pity = vArgs.Pity.Weapon + x;
 			if(pity > 61)
 			{
 				// 61 is the 62nd pull, so after that is the 63rd pull, where pity is active according to a source.
@@ -286,9 +286,9 @@ WishCalc.GetFirstDistribution = function(args)
 
 		// Get an array for the second five-star to occur (if needed).
 		let wepSecondSSRArray = null;
-		if(args.EpitomizedPath < 2 && args.Pulls > 1)
+		if(vArgs.EpitomizedPath < 1 && vArgs.Pulls > 1)
 		{
-			let pullsForThis = Math.min(77, args.Pulls - 1);
+			let pullsForThis = Math.min(77, vArgs.Pulls - 1);
 
 			wepSecondSSRArray = new Array(pullsForThis + wepFirstSSRArray.length);
 			for(let x = 0; x < wepSecondSSRArray.length; x++) wepSecondSSRArray[x] = 0.0;
@@ -304,13 +304,13 @@ WishCalc.GetFirstDistribution = function(args)
 			if(x < wepFirstSSRArray.length)
 			{
 				// Add the chance for the first 5-star to be the specific 5-star weapon.
-				firstDistribution[x] += wepFirstSSRArray[x] * (args.EpitomizedPath == 1 ? 1.0 : (args.Guarantee.Weapon == true ? 0.5 : 0.375));
+				firstDistribution[x] += wepFirstSSRArray[x] * (vArgs.EpitomizedPath == 1 ? 1.0 : (vArgs.Guarantee.Weapon == true ? 0.5 : 0.375));
 			}
 			if(wepSecondSSRArray != null && x < wepSecondSSRArray.length)
 			{
 				// Add the chance for the second SSR to be the specific five-star weapon.
 				// For that to happen, the first must not be the specific five-star weapon.
-				firstDistribution[x] += wepSecondSSRArray[x] * (args.Guarantee.Weapon == true ? 0.5 : 0.625);
+				firstDistribution[x] += wepSecondSSRArray[x] * (vArgs.Guarantee.Weapon == true ? 0.5 : 0.625);
 			}
 		}
 	}
@@ -344,6 +344,7 @@ WishCalc.Calculate = function(args)
 	}
 	
 	let firstDistribution = WishCalc.GetFirstDistribution(args);
+	console.log(firstDistribution);
 
 	// The resulting array.
 	result.Result = 0.0;
@@ -422,9 +423,6 @@ WishCalc.Calculate = function(args)
 			}
 			result.Result += resultArray[x];
 		}
-
-		for(let x = 0; x < resultArray.length; x++)
-			if(isNaN(resultArray[x])) console.log(`${x}: is NaN. (${indexRankCharacter}, ${indexRankWeapon})`);
 	}
 	else
 	{
@@ -484,9 +482,9 @@ WishCalc.DisplayResult = function(result)
 		description += "Currently on the weapon banner, "
 		+ result.Args.Pity.Weapon + " pity, "
 		+"\""
-		+ (result.Args.EpitomizedPath == 0 ? "0/2" : (result.Args.EpitomizedPath == 1 ? "1/2" : "2/2"))
+		+ (result.Args.EpitomizedPath == 1 ? "1/1" : "0/1")
 		+ "\" on the epitomized path"
-		+ (result.Args.EpitomizedPath == 2 ? ". " : ", and there " + (result.Args.Guarantee.Weapon == true ? "is a" : "is no" ) + " guarantee for a featured weapon. ");
+		+ (result.Args.EpitomizedPath == 1 ? ". " : (", and there " + (result.Args.Guarantee.Weapon == true ? "is a" : "is no" ) + " guarantee for a featured weapon. "));
 	}
 	description += WishCalc.Utilities.Commas(result.Args.Pulls) + " single pull" + (result.Args.Pulls == 1 ? " has" : "s have") + " a " + resultString + " chance for success at ";
 	if(result.Args.Target.Character > 0)
