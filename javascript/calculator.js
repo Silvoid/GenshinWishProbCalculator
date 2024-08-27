@@ -344,7 +344,6 @@ WishCalc.Calculate = function(args)
 	}
 	
 	let firstDistribution = WishCalc.GetFirstDistribution(args);
-	console.log(firstDistribution);
 
 	// The resulting array.
 	result.Result = 0.0;
@@ -410,7 +409,7 @@ WishCalc.Calculate = function(args)
 				}
 				else
 				{
-					let indexPull = Math.min(maxIndexCharacterPull - 1, x, args.Pulls - x - 2);
+					let indexPull = Math.min(maxIndexCharacterPull - 1, args.Pulls - x - 2);
 					if(indexPull < 0) resultArray[x] *= 0.0;
 					else resultArray[x] *= WishCalc.Data.CharacterAccumulation[indexRankCharacter][indexPull];
 				}
