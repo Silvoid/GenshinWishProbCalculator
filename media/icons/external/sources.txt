@@ -1,0 +1,1 @@
+info_white.svg, info_black.svg <- https://www.svgrepo.com/svg/502710/info

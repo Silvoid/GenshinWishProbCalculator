@@ -77,11 +77,36 @@ WishCalc.Style.Number = function(quantity, name) { return `${quantity} ${name}${
 // Add some listeners to call the functions, and execute functions on load.
 //
 
-document.defaultView.addEventListener("resize", (e) => { 
-    WishCalc.Style.FitText("page-calculator-header");
-});
+// document.defaultView.addEventListener("resize", (e) => { 
+//     WishCalc.Style.FitText("page-calculator-header");
+// });
+// WishCalc.Style.FitText("page-calculator-header");
 
-WishCalc.Style.FitText("page-calculator-header");
+{
+    let wcMainPage = document.getElementById("wc-inner-page-main");
+    let wcMainPageButton = document.getElementById("button-wc-to-main");
+    let wcExtraInfoPage = document.querySelector(".wc-info-block");
+    let wcExtraInfoButton = document.getElementById("button-wc-to-extra-info");
+
+    function scrollToTop(element)
+    {
+        if(element == null) return;
+        element.scrollTop = 0;
+        if(element.parentElement != document.documentElement)
+            scrollToTop(element.parentElement);
+    }
+
+    if(wcExtraInfoButton) wcExtraInfoButton.addEventListener("click", (e) => {
+        wcExtraInfoPage.classList.add("active");
+        wcMainPage.classList.remove("active");
+        scrollToTop(wcExtraInfoPage);
+    });
+    if(wcMainPageButton) wcMainPageButton.addEventListener("click", (e) => {
+        wcMainPage.classList.add("active");
+        wcExtraInfoPage.classList.remove("active");
+        scrollToTop(wcMainPage);
+    });
+}
 
 
 if(true)

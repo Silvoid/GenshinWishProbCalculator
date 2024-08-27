@@ -6,9 +6,9 @@ var WishCalc = {
 	IsInitialized: false, // Variable for knowing if data has been initialized.
 	IsResultClean: false, // Variable for knowing if the result area is clean.
 	Utilities: {},
-    Style: {},
-	Generic: {},
-    Inputs: {},
+    Style:     {},
+	Generic:   {},
+    Inputs:    {},
 }
 
 
@@ -19,10 +19,11 @@ var WishCalc = {
 
 WishCalc.Utilities.IsObject = function(target)
 {
-//  return (target instanceof Array) === false && (target instanceof Object) === true;
+	if(target == null) return null;
     return target.constructor === ({}).constructor;
 }
 
+// A function to just get a number from (grab the numbers in) a string.
 WishCalc.Utilities.ParseInt = function(target)
 {
 	if(typeof target === "string" || (target instanceof String))
@@ -40,6 +41,31 @@ WishCalc.Utilities.ParseInt = function(target)
 		return parseInt(value);
 	}
 	return parseInt(target);
+}
+
+// A function to help with making sure there are values where functions are looking for.
+WishCalc.Utilities.ValidateArguments = function(source, destination)
+{
+	if(source && WishCalc.Utilities.IsObject(destination))
+	{
+		let keys = Object.keys(destination);
+		for(let i = 0; i < keys.length; i++)
+		{
+			let key = keys[i];
+			if(WishCalc.Utilities.IsObject(source[key]))
+			{
+				if(source.hasOwnProperty(key) && (typeof source[key]) === (typeof destination[key]))
+				{
+					WishCalc.Utilities.ValidateArguments(source[key], destination[key]);
+				}
+			}
+			else if((source[key] instanceof Object) !== true && (source[key] === "N/A" || (typeof source[key]) === (typeof destination[key])))
+			{
+				destination[key] = source[key];
+			}
+		}
+	}
+	return destination;
 }
 
 
@@ -159,7 +185,7 @@ WishCalc.Initialize = function()
 		dataChanceWeapArray[x] /= sum;
 	}
 	
-	WishCalc.IsInitialized = true;	
+	WishCalc.IsInitialized = true;
 	document.getElementById("button-wc-calculate").value = "Calculate";
 }
 

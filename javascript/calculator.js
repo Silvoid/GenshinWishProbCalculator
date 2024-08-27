@@ -2,6 +2,59 @@
 // - https://www.hoyolab.com/article/497840
 // - https://genshin-impact.fandom.com/wiki/Wishes
 
+
+// NOTES:
+// [1] You can observe that there's some code just to handle validation of arguments passed into the functions.
+//     Normally, these argument validations may be unnecessary, but there was a push towards providing some ease in using this independently,
+//     such as just calling the functions through the browser console instead of through the user interface.
+
+WishCalc.Direct = { };
+
+
+
+WishCalc.Direct.GetSpecificChance = function(targetCon, targetRef, targetPull)
+{
+	if(targetPull < 1) return 0;
+	if(targetCons > 0 && targetRefs > 0)
+		return WishCalc.Data.PairDistribution[targetCon][targetRef][targetPull];
+	if(targetCons > 0) return WishCalc.Data.CharacterDistribution[targetCon];
+	if(targetRefs > 0) return WishCalc.Data.WeaponDistribution[targetPull];
+}
+
+WishCalc.GetSpecificChance = function(args)
+{
+	let targetCons = 0;
+	let targetRefs = 0;
+	let targetPull = 0;
+	let vArgs = {};
+	
+	// Validating arguments.
+	if(args && WishCalc.Utilities.IsObject(args) && args.BypassArgumentsValidation !== true)
+	{
+		vArgs = {
+			Target: {
+				Character: 0,
+				Weapon:    0,
+				Pull:      0
+			}
+		}
+		WishCalc.Utilities.ValidateArguments(args, vArgs);
+		targetCons = vArgs.Target.Character;
+		targetRefs = vArgs.Target.Weapon;
+		targetPull = vArgs.Target.Pull - 1;
+	}
+	else
+	{
+		targetCons = args.Target.Character;
+		targetRefs = args.Target.Weapon;
+		targetPull = args.Target.Pull - 1;
+	}
+
+	return WishCalc.Direct.GetSpecificChance(targetCons, targetRefs, targetPull);
+}
+
+
+
 WishCalc.GetInputs = function()
 {
 	let inputCollection = {
@@ -93,31 +146,7 @@ WishCalc.ValidateCalculationArgs = function(args)
 		}
 	};
 
-    function sfnAcceptInputArgument(source, destination)
-    {
-        if(WishCalc.Utilities.IsObject(destination))
-        {
-            let keys = Object.keys(destination);
-            for(let i = 0; i < keys.length; i++)
-            {
-                let key = keys[i];
-                if(WishCalc.Utilities.IsObject(source[key]))
-                {
-                    if(source.hasOwnProperty(key) && (typeof source[key]) === (typeof destination[key]))
-                    {
-                        sfnAcceptInputArgument(source[key], destination[key]);
-                    }
-                }
-                else if((source[key] instanceof Object) !== true && (source[key] === "N/A" || (typeof source[key]) === (typeof destination[key])))
-                {
-                    destination[key] = source[key];
-                }
-            }
-        }
-        return destination;
-    }
-
-	sfnAcceptInputArgument(args, input);
+	WishCalc.Utilities.ValidateArguments(args, input);
 	input.Initial = {
 		Current: {
 			Character: input.Current.Character,
@@ -141,9 +170,152 @@ WishCalc.ValidateCalculationArgs = function(args)
 	input.Pity.Weapon    = Math.min(76, Math.max(0, args.Pity.Weapon));
 
 	input.Pulls = Math.floor(input.Pulls.Primogems / 160) + Math.floor(input.Pulls.IntertwinedFates) + Math.floor(input.Pulls.Starglitter / 5);
-	input.Pulls = Math.min(args.Target.Character * 180 + args.Target.Weapon * 231, Math.max(0, input.Pulls));
+	input.Pulls = Math.min(args.Target.Character * 180 + args.Target.Weapon * 154, Math.max(0, input.Pulls));
 
     return input;
+}
+
+
+
+// Function for getting the average (mean) pulls to get targets.
+WishCalc.GetAverageByMean = function(args)
+{
+	let input = {
+		Target: {
+			Character: 0,
+			Weapon:    0,
+		}
+	};
+
+	WishCalc.Utilities.ValidateArguments(args, input);
+	let targetCons = input.Target.Weapon;
+	let targetRefs = input.Target.Weapon;
+
+	let dataSource = null;
+	if(targetCons > 0 && targetRefs > 0) dataSource = WishCalc.Data.PairDistribution[targetCons][targetRefs];
+	else if(targetCons > 0)              dataSource = WishCalc.Data.CharacterDistribution[targetCons][targetRefs];
+	else if(targetRefs > 0)              dataSource = WishCalc.Data.WeaponDistribution[targetCons][targetRefs];
+	
+	let sum = 0.0;
+	if(dataSource instanceof Array) for(let pullNumber = 0; pullNumber < dataSource.length; pullNumber++)
+	{
+		sum += pullNumber * dataSource[pullNumber];
+	}
+
+	input.Result = sum;
+	return input;
+}
+
+WishCalc.GetFirstDistribution = function(args)
+{
+	let result = {};
+
+	let vArgs = WishCalc.Utilities.ValidateArguments(args, {
+		Target:    { Character: 0,     Weapon: 0 },
+		Pity:      { Character: 0,     Weapon: 0 },
+		Guarantee: { Character: false, Weapon: false },
+		Pulls:          0,
+		EpitomizedPath: 0
+	});
+
+	// Do pulls for character copies.
+	let chance    = 0.0;
+	let remaining = 1.0;
+	if(vArgs.Target.Character > 0)
+	{
+		// Aliases.
+		let baseDistribution = WishCalc.Data.CharacterBaseDistribution;
+		let firstDistribution = result.Character = new Array(180 - vArgs.Pity.Character - (vArgs.Guarantee.Character == true ? 90 : 0));
+
+		for(let x = 0; x < firstDistribution.length; x++) { firstDistribution[x] = 0.0; }
+		for(let x = 0; x < 90 - vArgs.Pity.Character; x++)
+		{
+			chance = 0.006;
+			let pity = vArgs.Pity.Character + x;
+			if(pity > 72)
+			{
+				// Soft pity's effect supposedly starts on the 74th pull.
+				// For zero-based counting, the 74th pull is 73, and that is after 72.
+				chance = Math.min(1.0, 0.06 * (pity - 72) + 0.006);
+			}
+
+			// Get the chance for this pull to get the character, and subtract those who won.
+			chance *= remaining; remaining -= chance;
+			if(vArgs.Guarantee.Character == false)
+			{
+				// When there is no guarantee, consider the chance of how the first or second can be the target.
+				// At first, there was a 50% chance for the first 5-star to be the target rate-up character.
+				// By Genshin 5.0, there is a consolidated chance of 55% for the first to be the target.
+				// A cause for that consolidated chance was described as the 50/50 loss having a chance at still winning.
+				// Just using the consolidated chance directly for ease for now.
+				let firstWinRate = 0.55;
+				for(let y = 0; y < 90; y++)
+					firstDistribution[x + y + 1] += (1.0 - firstWinRate) * chance * baseDistribution[y];
+				chance *= firstWinRate;
+			}
+			firstDistribution[x] += chance;
+		}
+	}
+
+	// Do pulls for weapon copies.
+	chance = 0.0;
+	remaining = 1.0;
+	if(vArgs.Target.Weapon > 0)
+	{
+		let baseDistribution = WishCalc.Data.WeaponBaseDistribution;
+
+		// With how the pity works, the weapon banner caps out at 77 pulls for a 5-star.
+		// There is therefore a maximum of (77 * 2 or) 154 pulls to consider.
+		let firstDistribution = result.Weapon = new Array(154 - args.Pity.Weapon - args.EpitomizedPath * 77);
+		for(let x = 0; x < firstDistribution.length; x++) firstDistribution[x] = 0.0;
+
+		// Get an array for the first five-star to occur.
+		let wepFirstSSRArray = new Array(Math.min(args.Pulls, 77 - args.Pity.Weapon));
+		for(let x = 0; x < wepFirstSSRArray.length; x++)
+		{
+			chance = 0.007;
+			let pity = args.Pity.Weapon + x;
+			if(pity > 61)
+			{
+				// 61 is the 62nd pull, so after that is the 63rd pull, where pity is active according to a source.
+				chance = Math.min(1.0, 0.07 * (pity - 61) + 0.007);
+			}
+			wepFirstSSRArray[x] = chance * remaining;
+			remaining -= wepFirstSSRArray[x];
+		}
+
+		// Get an array for the second five-star to occur (if needed).
+		let wepSecondSSRArray = null;
+		if(args.EpitomizedPath < 2 && args.Pulls > 1)
+		{
+			let pullsForThis = Math.min(77, args.Pulls - 1);
+
+			wepSecondSSRArray = new Array(pullsForThis + wepFirstSSRArray.length);
+			for(let x = 0; x < wepSecondSSRArray.length; x++) wepSecondSSRArray[x] = 0.0;
+
+			for(let x = 0; x < wepFirstSSRArray.length; x++)
+				for(let y = 0; y < pullsForThis; y++)
+					wepSecondSSRArray[x + y + 1] += wepFirstSSRArray[x] * baseDistribution[y];
+		}
+
+		// Start adding the necessary arrays together.
+		for(let x = 0; x < firstDistribution.length; x++)
+		{
+			if(x < wepFirstSSRArray.length)
+			{
+				// Add the chance for the first 5-star to be the specific 5-star weapon.
+				firstDistribution[x] += wepFirstSSRArray[x] * (args.EpitomizedPath == 1 ? 1.0 : (args.Guarantee.Weapon == true ? 0.5 : 0.375));
+			}
+			if(wepSecondSSRArray != null && x < wepSecondSSRArray.length)
+			{
+				// Add the chance for the second SSR to be the specific five-star weapon.
+				// For that to happen, the first must not be the specific five-star weapon.
+				firstDistribution[x] += wepSecondSSRArray[x] * (args.Guarantee.Weapon == true ? 0.5 : 0.625);
+			}
+		}
+	}
+
+	return result;
 }
 
 
@@ -170,206 +342,103 @@ WishCalc.Calculate = function(args)
 		result.Invalidation = "Less than one pull to do?";
 		return result;
 	}
-
 	
-	// Do pulls for character copies.
-	let firstDistCharacter = null;
-	let chance = 0.0;
-	let remaining = 1.0;
-	if(args.Target.Character > 0)
-	{
-		let firstDist = firstDistCharacter = new Array(180  // 180 pulls is the default maximum.
-			- args.Pity.Character                           // Subtract the pity.
-			- (args.Guarantee.Character == true ? 90 : 0)); // Subtract some number if it's guaranteed.
-		for(let x = 0; x < firstDist.length; x++) { firstDist[x] = 0; }
-		for(let x = 0; x < 90 - args.Pity.Character; x++)
-		{
-			chance = 0.006;
-			let pity = args.Pity.Character + x;
-			if(pity > 72)
-			{
-				// Soft pity's effect supposedly starts on the 74th pull.
-				// For zero-based counting, the 74th pull is 73, and that is after 72.
-				chance = Math.min(1.0, 0.06 * (pity - 72) + 0.006);
-			}
-			chance *= remaining;
-			remaining -= chance;
-			if(args.Guarantee.Character == false)
-			{
-				chance *= 0.5;
-				for(let y = 0; y < 90; y++)
-				{
-					firstDist[x + y + 1] += chance * dataChanceCharArray[y];
-				}
-			}
-			firstDist[x] += chance;
-		}
-	}
-
-	// Do pulls for weapon copies.
-	let firstDistWeapon = null;
-	chance = 0.0;
-	remaining = 1.0;
-	if(args.Target.Weapon > 0)
-	{
-		let firstDist = firstDistWeapon = new Array(231 // "77 * 3 = 231". 231 is the default maximum.
-			- args.Pity.Weapon                          // Subtract the pity.
-			- args.EpitomizedPath * 77);                // Subtract some number based on the status of the epitomized path.
-		for(let x = 0; x < firstDist.length; x++)
-		{
-			firstDist[x] = 0.0;
-		}
-
-		// Get an array for the first five-star to occur.
-		let wepFirstSSRArray = new Array(Math.min(args.Pulls, 77 - args.Pity.Weapon));
-		for(let x = 0; x < wepFirstSSRArray.length; x++)
-		{
-			chance = 0.007;
-			let pity = args.Pity.Weapon + x;
-			if(pity > 61)
-			{
-				// 61 is the 62nd pull, so after that is the 63rd pull, where pity is active according to a source.
-				chance = Math.min(1.0, 0.07 * (pity - 61) + 0.007);
-			}
-			wepFirstSSRArray[x] = chance * remaining;
-			remaining -= wepFirstSSRArray[x];
-		}
-
-		// Get an array for the second five-star to occur (if needed).
-		let wepSecondSSRArray = null;
-		if(args.EpitomizedPath < 2 && args.Pulls > 1)
-		{
-			let pullsForThis = Math.min(77, args.Pulls - 1);
-			wepSecondSSRArray = new Array(pullsForThis + wepFirstSSRArray.length);
-			for(let x = 0; x < wepSecondSSRArray.length; x++)
-				wepSecondSSRArray[x] = 0.0;
-			for(let x = 0; x < wepFirstSSRArray.length; x++)
-				for(let y = 0; y < pullsForThis; y++)
-					wepSecondSSRArray[x + y + 1] += wepFirstSSRArray[x] * dataChanceWeapArray[y];
-		}
-		
-		// Get an array for the third five-star to occur (if needed).
-		let wepThirdSSRArray = null;
-		if(args.EpitomizedPath < 1 && args.Pulls > 2)
-		{
-			let pullsForThis = Math.min(77, args.Pulls - 2);
-			wepThirdSSRArray = new Array(pullsForThis + wepSecondSSRArray.length);
-			for(let x = 0; x < wepThirdSSRArray.length; x++)
-				wepThirdSSRArray[x] = 0.0;
-			for(let x = 0; x < wepSecondSSRArray.length; x++)
-				for(let y = 0; y < pullsForThis; y++)
-					wepThirdSSRArray[x + y + 1] += wepSecondSSRArray[x] * dataChanceWeapArray[y];
-		}
-
-		// Start adding the necessary arrays together.
-		for(let x = 0; x < firstDist.length; x++)
-		{
-			// Add the chance for the first SSR to be the specific five-star weapon.
-			let sum = new Array(3);
-			if(x < wepFirstSSRArray.length)
-			{
-				firstDist[x] += wepFirstSSRArray[x] * (args.EpitomizedPath == 2 ? 1.0 : (args.Guarantee.Weapon == true ? 0.5 : 0.375));
-			}
-			if(wepSecondSSRArray != null && x < wepSecondSSRArray.length)
-			{
-				// Add the chance for the second SSR to be the specific five-star weapon.
-				// For that to happen, the first must not be the specific five-star weapon.
-				// Variation A: First has the guarantee, but fails the fifty-fifty.
-				// Variation B: First does not have the guarantee, but...
-				// Variation BA: First fails the 50/50.
-				// Variation BB: First fails to be a featured weapon.
-				// "0.5 * 0.375" describes Variation A.
-				// "0.625 * (0.6 * 0.375 + 0.4 * 0.5)" describes Variation B.
-				firstDist[x] += wepSecondSSRArray[x] * (args.EpitomizedPath == 1 ? (args.Guarantee.Weapon == true ? 0.5 : 0.625) : (args.Guarantee.Weapon == true ? 0.1875 : 0.265625));
-			}
-			if(wepThirdSSRArray != null && x < wepThirdSSRArray.length)
-			{
-				// Add the chance for the third SSR to be the specific five-star weapon.
-				// For that to happen, the first must not be the specific five-star weapon,
-				// and the second must not be the specific five-star weapon.
-				// Variation A: First has the guarantee, but fails the fifty-fifty, and then second fails. 
-				// Variation B: First does not have the guarantee, but...
-				// Variation BA: First fails the 50/50, and then second fails.
-				// Variation BB: First fails to be a featured weapon, and then second fails.
-				// "0.5 * 0.625" describes Variation A.
-				// "0.625 * (0.6 * 0.625 + 0.4 * 0.5)" describes Variation B.
-				firstDist[x] += wepThirdSSRArray[x] * (args.Guarantee.Weapon == true ? 0.3125 : 0.359375);
-			}
-		}
-	}
+	let firstDistribution = WishCalc.GetFirstDistribution(args);
 
 	// The resulting array.
 	result.Result = 0.0;
-	let resultArray = firstDistCharacter;
-	if(firstDistCharacter == null)
+	let resultArray = firstDistribution.Character;
+	if(firstDistribution.Character == null)
 	{
 		// If the first character copy distribution array is null, then try to switch the result array to the weapon.
-		if(firstDistWeapon == null)
+		if(firstDistribution.Weapon == null)
 		{
 			// If the first weapon copy distribution array is also null, then alert and return.
 			result.Invalidation = "Nothing computed. No target set?";
 			return result;
 		}
-
+		
+		// Prepare to get more copies when necessary.
+		let moreIndexRank = args.Target.Weapon - 2;
+		let maxIndexPull = 154 * (args.Target.Weapon - 1);
+		
 		// Get the chance for a success at the weapon's refinement rank.
-		resultArray = firstDistWeapon;
-		let indexRank = args.Target.Weapon - 2;
+		resultArray = firstDistribution.Weapon;
 		for(let x = 0; x < args.Pulls && x < resultArray.length; x++)
 		{
-			let indexPulls = Math.min((args.Target.Weapon - 1) * 231, args.Pulls - x - 1);
 			if(args.Target.Weapon > 1)
 			{
-				resultArray[x] *= dataChanceWeapFullArray[indexPulls][indexRank];
+				// Combine with chance of more copies, by getting the cumulative chance for the remaining copies with the remaining pulls when the first copy happens at this pull.
+				// A subtraction of two while getting the first copy has already spent one pull, and will be accessing via zero-based counting.
+				let indexPull = Math.min(maxIndexPull - 1, args.Pulls - x - 2);
+				if(indexPull < 0) resultArray[x] *= 0.0;
+				else resultArray[x] *= WishCalc.Data.WeaponAccumulation[moreIndexRank][indexPull];
 			}
 			result.Result += resultArray[x];
 		}
 	}
-	else if(firstDistWeapon != null)
+	else if(firstDistribution.Weapon != null)
 	{
-		// If the first character copy distribution array and the first weapon copy distribution array are both not null,
-		// - calculate for a success at both.
+		// If the first character copy distribution array and the first weapon copy distribution array are both not null, calculate for a success at both.
 		resultArray = new Array(args.Pulls);
 		for(let x = 0; x < resultArray.length; x++) resultArray[x] = 0;
-		for(let x = 0; x < args.Pulls && x < firstDistCharacter.length; x++)
-			for(let y = 0; x + y + 1 < args.Pulls && y < firstDistWeapon.length; y++)
-				resultArray[x + y + 1] += firstDistCharacter[x] * firstDistWeapon[y];
+		for(let x = 0; x < args.Pulls && x < firstDistribution.Character.length; x++)
+			for(let y = 0; x + y + 1 < args.Pulls && y < firstDistribution.Weapon.length; y++)
+				resultArray[x + y + 1] += firstDistribution.Character[x] * firstDistribution.Weapon[y];
 
-		// Get an index in the array (pre-calculated data set) for the character and/or weapon.
+		// Prepare to calculate for more copies.
+		// Get an index in the pre-calculated data set for the character and/or weapon.
 		// For the structure, the target number of character/weapon is subtracted by two as
 		// (1) the first copy is already calculated, and
 		// (2) array indexing is zero-based.
-		// For the combined (both character and weapon) index, the character index is multiplied by 4,
-		// to skip the five weapon indexes for the prior character index when the target weapon index is added.
 		let indexRankCharacter = (args.Target.Character - 2);
 		let indexRankWeapon    = (args.Target.Weapon    - 2);
-		let indexRank          = indexRankCharacter * 4 + indexRankWeapon;
 
-		let maxIndexCharacterPulls = (args.Target.Character - 1) * 180;
-		let maxIndexWeaponPulls    = (args.Target.Weapon - 1) * 231;
-		let maxIndexPulls          = Math.max(0, maxIndexCharacterPulls) + Math.max(0, maxIndexWeaponPulls);
+		let maxIndexCharacterPull = (args.Target.Character - 1) * 180;
+		let maxIndexWeaponPull    = (args.Target.Weapon    - 1) * 154;
 
 		for(let x = 0; x < args.Pulls; x++)
 		{
-			let indexPulls = Math.min(maxIndexPulls, args.Pulls - x - 1);
 			if(args.Target.Character > 1)
 			{
 				if(args.Target.Weapon > 1)
-					resultArray[x] *= dataCombinedArray[indexPulls][indexRank];
+				{
+					let indexPull = Math.min(maxIndexCharacterPull + maxIndexWeaponPull - 1, args.Pulls - x - 2);
+					if(indexPull < 0) resultArray[x] *= 0.0;
+					else resultArray[x] *= WishCalc.Data.PairAccumulation[indexRankCharacter][indexRankWeapon][indexPull];
+				}
 				else
-					resultArray[x] *= dataChanceCharFullArray[indexPulls][indexRankCharacter];
+				{
+					let indexPull = Math.min(maxIndexCharacterPull - 1, x, args.Pulls - x - 2);
+					if(indexPull < 0) resultArray[x] *= 0.0;
+					else resultArray[x] *= WishCalc.Data.CharacterAccumulation[indexRankCharacter][indexPull];
+				}
 			}
 			else if(args.Target.Weapon > 1)
-				resultArray[x] *= dataChanceWeapFullArray[indexPulls][indexRankWeapon];
+			{
+				let indexPull = Math.min(maxIndexWeaponPull - 1, args.Pulls - x - 2);
+				if(indexPull < 0) resultArray[x] *= 0.0;
+				else resultArray[x] *= WishCalc.Data.WeaponAccumulation[indexRankWeapon][indexPull];
+			}
 			result.Result += resultArray[x];
 		}
+
+		for(let x = 0; x < resultArray.length; x++)
+			if(isNaN(resultArray[x])) console.log(`${x}: is NaN. (${indexRankCharacter}, ${indexRankWeapon})`);
 	}
-	else for(let x = 0; x < args.Pulls && x < resultArray.length; x++)
+	else
 	{
 		let indexRank = args.Target.Character - 2;
-		let indexPulls = Math.min((args.Target.Character - 1) * 180, args.Pulls - x - 1);
-		if(args.Target.Character > 1)
-			resultArray[x] *= dataChanceCharFullArray[indexPulls][indexRank];
-		result.Result += resultArray[x];
+		for(let x = 0; x < args.Pulls && x < resultArray.length; x++)
+		{
+			if(args.Target.Character > 1)
+			{
+				let indexPull = Math.min((args.Target.Character - 1) * 180 - 1, args.Pulls - x - 2);
+				if(indexPull < 0) resultArray[x] *= 0.0;
+				else resultArray[x] *= WishCalc.Data.CharacterAccumulation[indexRank][indexPull];
+			}
+			result.Result += resultArray[x];
+		}
 	}
 
 	return result;

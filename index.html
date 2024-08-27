@@ -19,12 +19,10 @@
 	<meta property="og:description" content="A calculator for calculating the probability of getting featured five-star characters and featured five-star weapons in the game known as &quot;Genshin Impact&quot;.">
 </head>
 <body>
-    <header>
-        <h1 id="page-calculator-header" class="page-screen-title"><span class="optional">Genshin Impact </span>Wishing Probability Calculator</h1>
-    </header>
 
-    <section><div>
-        <section id="wc-body">
+    <section class="interface-super-container"><div class="interface-container">    
+        <h1 id="page-calculator-header" class="active page-screen-title"><span class="optional">Genshin Impact </span>Wish<span class="optional">ing</span> Probability Calculator</h1>
+        <div id="wc-inner-page-main" class="active"><section id="wc-body">
             <section class="wc-form">
                 <div>
                     <span class="section-text">Target<span class="optional"> Ranks</span></span>
@@ -93,9 +91,9 @@
 					<input id="input-weapons-pity" name="PityWeapPulls" class="input-number" value="" placeholder="0 out of 76">
                     <label for="input-guaranteed-specific-weapon">Epitomized path<span class="optional"> status</span>?</label>
                     <select id="input-guaranteed-specific-weapon" name="WeapSpecificGuarantee">
-                        <option value="0" selected>0/2</option>
-                        <option value="1">1/2</option>
-                        <option value="2">2/2</option>
+                        <option value="0" selected>0/1</option>
+                        <option value="1">1/1</option>
+                        <!-- <option value="2">2/2</option> -->
                     </select>
                 </div>
 
@@ -117,17 +115,25 @@
                     <br>
                     <p id="text-wc-result-description"></p>
                 </section>
-                <button id="button-wc-calculate">Calculate</button>
+                <div class="grid-fit-rest buttons">
+                    <button id="button-wc-calculate">Calculate</button>
+                    <button id="button-wc-to-extra-info">
+                        <!-- <img src="media/icons/external/info_black.svg" width="32" height="32" alt=""> -->
+                    </button>
+                </div>
             </section>
-        </section>
+        </section></div>
 
         <section class="wc-info-block">
+            <div style="display: flex; justify-content: center;">
+                <button id="button-wc-to-main">Back to calculator</button>
+            </div>
             <h2>What is this, and how does this work?</h2>
             <p>
                 This is a calculator for probabilities of successfully acquiring a target number of featured/limited five-star characters, and/or featured/limited five-star weapons from wishing in the game, Genshin Impact.
             </p>
             <p>
-                In a nutshell, this calculator works much like a simulator in terms of getting results, but without the random number generation, as it just iterates through the combinations/permutations of percentages (chances), multiplying and adding accordingly.
+                In a nutshell, this calculator can be compared to a simulator in terms of getting results, but without the random number generation, as it just iterates through the combinations/permutations of percentages (chances), multiplying and adding accordingly.
                 Per this distinction, this should qualify as a calculator rather than a simulator. While "wishing for 5-stars" has a limit that is not too large, it is thus faster, and more accurate.
                 Would you like <a id="wc-workings-info-verbose-link" href="#wc-workings-info-verbose">a more verbose answer</a>?
             </p>
@@ -141,7 +147,7 @@
             </div>
             <div>
                 <h2>Notes</h2>
-                <p>While there would basically be no difference between "single pulls" and "multis (ten pulls)", by technicality, the target selector for five-star characters is actually just "the number of limited (featured) five-star characters to get". This means that it actually does not specify which "limited five-star character" it is getting. It could be a combination of any limited five-star characters that sums up to that number, and as a "multi (ten pull)" risks resetting the "pity" mechanic by a few pulls on an unintended target, it is therefore deemed necessary enough to clarify that this calculator accounts for "single pulls", and not "multis". Related to this, the target selector for the weapon does not work like the character's, as the pity mechanic between the two is different. A significant part, specifically the epitomized path, of the weapon's pity mechanic can reset too variably.</p>
+                <p>While there would basically be no difference between "single pulls" and "multis (ten pulls)", by technicality, the target selector for five-star characters is actually just "the number of limited (featured) five-star characters to get", while there is no difference in chance between different limited five-star characters. This means that it actually does not specify which "limited five-star character" it is getting. It could be a combination of any limited five-star characters that sums up to that number, and as a "multi (ten pull)" risks resetting the "pity" mechanic by a few pulls on an unintended target, it is therefore deemed necessary enough to clarify that this calculator accounts for "single pulls", and not "multis". Related to this, the target selector for the weapon does not work like the character's, as the pity mechanic between the two is different. A significant part, specifically the epitomized path, of the weapon's pity mechanic can reset too variably.</p>
                 <p>For the current version, this calculator does not account for "return wishes", wherein "starglitter" can be acquired from pulling, and be exchanged for more pulls to be done for the target(s).</p>
                 <p>Per technical limitations, the calculator loses accuracy as a chance becomes less and less likely. Specifically, its result will be rounded to 12 decimal places (in decimal, non-percent form). This means to say that something with 1 in a trillion or less likely odds will probably just be rounded to zero.</p>
                 <p>The calculator has some set bounds for setting inputs to the necessary minimum or maximum.</p>
@@ -165,9 +171,11 @@
                 <hr>
                 <br>
                 <h3>Other info...</h3>
-                <p>Last Updated: October 14, 2023.</p>
+                <p>Last Updated: August 28, 2024. Genshin 5.0.</p>
             </div>
         </section>
+
+        <section></section>
     </div></section>
 
     <footer></footer>
