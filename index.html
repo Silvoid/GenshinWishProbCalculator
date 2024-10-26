@@ -81,6 +81,8 @@
                     </select>
                     <label for="input-character-pity">Character pulls pity?</label>
 					<input id="input-character-pity" name="PityCharPulls" class="input-number" value="" placeholder="0 out of 89">
+                    <label for="input-character-pity">Radiance pity?</label>
+					<input id="input-radiance-pity" name="PityRadiance" class="input-number" value="" placeholder="0 out of 3">
                     <label for="input-guaranteed-featured-weapon">Last <span class="optional">five-star (</span>5*<span class="optional">)</span> weapon?</label>
                     <select id="input-guaranteed-featured-weapon" name="WeapFeatureGuarantee">
                         <option value="false" selected>None</option>
@@ -121,6 +123,8 @@
                         <!-- <img src="media/icons/external/info_black.svg" width="32" height="32" alt=""> -->
                     </button>
                 </div>
+                <span style="font-size: 0.7rem; text-align: center;">Calculation for something like C6R1 should take less than two seconds, but any further may take at least 4 seconds or way more.</span>
+                <span style="font-size: 0.7rem; text-align: center;">While calculating, the page may appear unresponsive.</span>
             </section>
         </section></div>
 
@@ -171,7 +175,7 @@
                 <hr>
                 <br>
                 <h3>Other info...</h3>
-                <p>Last Updated: August 28, 2024. Genshin 5.0.</p>
+                <p>Last Updated: October 26, 2024. Genshin 5.0+</p>
             </div>
         </section>
 
@@ -185,6 +189,7 @@
 	<script src="javascript/generic.js"></script>
 	<script src="javascript/data.js"></script>
 	<script src="javascript/style.js"></script>
+	<script src="javascript/initiation.js"></script>
 	<script src="javascript/calculator.js"></script>
 </body>
 </html>

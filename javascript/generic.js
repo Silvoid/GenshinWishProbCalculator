@@ -250,4 +250,11 @@ if(true)
 			e.target.value = String(Math.min(76, Math.max(0, parsedValue)));
 		}
 	});
+	document.getElementById("input-radiance-pity").addEventListener("input", (e) => {
+		let parsedValue = WishCalc.Utilities.ParseInt(e.target.value);
+		if(isNaN(parsedValue) !== true)
+		{
+			e.target.value = String(Math.min(3, Math.max(0, parsedValue)));
+		}
+	});
 }

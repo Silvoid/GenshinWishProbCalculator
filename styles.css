@@ -34,14 +34,14 @@ html
 body
 {
     margin: 0 auto;
-    max-width: 1280px;
+    /* max-width: 1280px; */
     height: 100vh;
 
     font-family: 'Arial', sans-serif;
     color: var(--color-text);
 
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+    /* display: grid; */
+    /* grid-template-rows: auto 1fr auto; */
 }
 
 .page-screen-title
@@ -126,8 +126,9 @@ p
 
 .interface-super-container
 {
-    display: grid;
-    align-content: center;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: stretch; */
     min-height: 100vh;
 }
 
