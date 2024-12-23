@@ -70,13 +70,23 @@ if(true)
         let baseContextDistribution = WishCalc.GetFirstCharacterBaseDistribution(pity);
         let baseDistribution = WishCalc.Data.CharacterBaseDistribution;
         
-        let distribution = new Array(4);
+        // Originally, there was some code to try and optimize memory allocation,
+        // but to accomodate a quick fix for a featured character guarantee letting the radiance iterator stay, instead of being reset,
+        // just allocate for all the spots. May also help with reducing headache for other code accounting for that attempt at optimization.
         let pullLimit = WishCalc.Data.CharacterPullLimit[0];
-
-        distribution[0] = new Array(pullLimit); for(let iP = 0; iP < pullLimit; iP++) distribution[0][iP] = 0.0;
-        if(radiance == 0) { distribution[1] = new Array(pullLimit); for(let iP = 0; iP < pullLimit; iP++) distribution[1][iP] = 0.0; } else distribution[1] = null;
-        if(radiance == 1) { distribution[2] = new Array(pullLimit); for(let iP = 0; iP < pullLimit; iP++) distribution[2][iP] = 0.0; } else distribution[2] = null;
-        if(radiance == 2) { distribution[3] = new Array(pullLimit); for(let iP = 0; iP < pullLimit; iP++) distribution[3][iP] = 0.0; } else distribution[3] = null;
+        let distribution = [
+            new Array(pullLimit),
+            new Array(pullLimit),
+            new Array(pullLimit),
+            new Array(pullLimit)
+        ];
+        for(let iP = 0; iP < pullLimit; iP++)
+        {
+            distribution[0][iP] = 0.0;
+            distribution[1][iP] = 0.0;
+            distribution[2][iP] = 0.0;
+            distribution[3][iP] = 0.0;
+        }
 
         let radianceDistribution = [ 0.0, 0.025, 0.25, 0.5 ];
         let featureWinRate  = (featureGuarantee == true ? 1.0 : (0.5 + radianceDistribution[radiance]));
@@ -84,7 +94,7 @@ if(true)
         for(let iPa = 0; iPa < baseContextDistribution.length; iPa++)
         {
             // Win the rate-up attempt.
-            distribution[0][iPa] += featureWinRate * baseContextDistribution[iPa];
+            distribution[featureGuarantee == true ? radiance : 0][iPa] += featureWinRate * baseContextDistribution[iPa];
 
             // Lose the rate-up attempt.
             if((featureWinRate < 1.0) && (radiance < 3)) for(let iPb = 0; iPb < baseDistribution.length; iPb++)
@@ -103,10 +113,10 @@ if(true)
     //   iRb is the iterator for the ending radiance.
     //   iP is the iterator for pull counts.
     WishCalc.Data.CharacterDistribution = [[
-        WishCalc.GetFirstCharacterDistribution(0, 0, 0), //
-        WishCalc.GetFirstCharacterDistribution(0, 0, 1), //
-        WishCalc.GetFirstCharacterDistribution(0, 0, 2), //
-        WishCalc.GetFirstCharacterDistribution(0, 0, 3)  //
+        WishCalc.GetFirstCharacterDistribution(0, false, 0), //
+        WishCalc.GetFirstCharacterDistribution(0, false, 1), //
+        WishCalc.GetFirstCharacterDistribution(0, false, 2), //
+        WishCalc.GetFirstCharacterDistribution(0, false, 3)  //
     ]];
 
     WishCalc.GetCharacterDistributionForAddition = function(radianceStart)
@@ -128,12 +138,12 @@ if(true)
     };
 
     // This function adds a character copy to a distribution for character copies.
-    // Expects originSource to be a result from "WishCalc.GetCharacterDistributionForAddition",
-    // or something similar, or for it to just be the list of end radiance without start.
+    // Expects "originSource" to be a result from "WishCalc.GetCharacterDistributionForAddition",
+    // or something compliant to its structure, "an array of pulls grouped up for pure ending radiance iterators".
     WishCalc.Arrays.AddCharacterCopy = function(originPullLimit, originSource)
     {
-        let CharacterPullLimit = WishCalc.Data.CharacterPullLimit[0]
-        let extensionPullLimit = originPullLimit + CharacterPullLimit;
+        let characterPullLimit = WishCalc.Data.CharacterPullLimit[0]
+        let extensionPullLimit = originPullLimit + characterPullLimit;
         let distribution = new Array(4);
         for(let iR = 0; iR < 4; iR++)
         {
@@ -141,54 +151,35 @@ if(true)
             for(let iP = 0; iP < extensionPullLimit; iP++) distribution[iR][iP] = 0.0;
         }
 
-        // Unrolled for loop. Apparently, it's faster.
+        // Add a copy by considering where the first branches end, and where the next branches will end when starting from them.
+        // NOTE: Some loop unrolling was done. Apparently, it's faster this way.
         let characterDistribution = WishCalc.Data.CharacterDistribution[0];
-        for(let iPa = 0; iPa < originPullLimit; iPa++) for(let iPb = 0; iPb < CharacterPullLimit; iPb++)
+        for(let iPa = 0; iPa < originPullLimit; iPa++) for(let iPb = 0; iPb < characterPullLimit; iPb++)
         {
             let iPO = iPa + iPb + 1;
             let originFactorA = ((originSource[0] != null) ? originSource[0][iPa] : 0);
             let originFactorB = ((originSource[1] != null) ? originSource[1][iPa] : 0);
             let originFactorC = ((originSource[2] != null) ? originSource[2][iPa] : 0);
             let originFactorD = ((originSource[3] != null) ? originSource[3][iPa] : 0);
+
+            // Chance to win and reset radiance pity.
             distribution[0][iPO] += originFactorA * characterDistribution[0][0][iPb];
             distribution[0][iPO] += originFactorB * characterDistribution[1][0][iPb];
             distribution[0][iPO] += originFactorC * characterDistribution[2][0][iPb];
             distribution[0][iPO] += originFactorD * characterDistribution[3][0][iPb];
+
+            // Chance to lose and increment radiance pity.
             distribution[1][iPO] += originFactorA * characterDistribution[0][1][iPb];
-            // distribution[1][iPO] += originFactorB * characterDistribution[1][1][iPb];
-            // distribution[1][iPO] += originFactorC * characterDistribution[2][1][iPb];
-            // distribution[1][iPO] += originFactorD * characterDistribution[3][1][iPb];
-            // distribution[2][iPO] += originFactorA * characterDistribution[0][2][iPb];
             distribution[2][iPO] += originFactorB * characterDistribution[1][2][iPb];
-            // distribution[2][iPO] += originFactorC * characterDistribution[2][2][iPb];
-            // distribution[2][iPO] += originFactorD * characterDistribution[3][2][iPb];
-            // distribution[3][iPO] += originFactorA * characterDistribution[0][3][iPb];
-            // distribution[3][iPO] += originFactorB * characterDistribution[1][3][iPb];
             distribution[3][iPO] += originFactorC * characterDistribution[2][3][iPb];
-            // distribution[3][iPO] += originFactorD * characterDistribution[3][3][iPb];
         }
 
         return distribution;
     };
+    
+    WishCalc.Arrays.AddSSRCharacterCopy = WishCalc.Arrays.AddCharacterCopy;
 
-
-    WishCalc.Arrays.ExtendCharacterCopy = function(count)
-    {
-        for(let iC = 1; iC < count; iC++) if(WishCalc.Data.CharacterDistribution[iC] == null)
-        {
-            WishCalc.Data.CharacterDistribution[iC] = [[],[],[],[]];
-            for(let iR = 0; iR < 4; iR++)
-            {
-                let source = WishCalc.Data.CharacterDistribution[iC - 1][iR];
-                if(iC == 1) source = WishCalc.GetCharacterDistributionForAddition(iR);
-                WishCalc.Data.CharacterDistribution[iC][iR] = WishCalc.Arrays.AddCharacterCopy(180 * iC, WishCalc.Data.CharacterDistribution[iC - 1][iR]);
-            }
-        }
-
-        return WishCalc.Data.CharacterDistribution;
-    }
-
-    // NOTE: This function may not be fully implemented yet, but the goal here was to support shortcuts toward target copies.
+    // NOTE: This function is kept here just for reference. Not in actual use.
     WishCalc.Arrays.AddCharacterCopies = function(aPullLimit, aArray, bPullLimit, bArray)
     {
         let timeStart = new Date();
@@ -269,33 +260,6 @@ if(true)
         }
         return { "Result": distribution, "TimeTaken": (new Date() - timeStart) };
     }
-
-    // TODO: For now, unimplemented, but this should be a function that establishes a shortcut towards further copies.
-    // The way it would do this is by, for example, checking if C2 is calculated, then it would just combine the C2 (3 copies) array with itself to get the probability for 6 copies (C5).
-    // WishCalc.ForCharacterCopies = function(copyCount)
-    // {
-    //     let copyIndex = copyCount - 1;
-    //     if(copyIndex < 0) return null;
-    //     if(WishCalc.Data.CharacterDistribution[copyIndex] == null)
-    //     {
-    //         let currentCopies = 0;
-    //         let currentDistribution = 0;
-    //         // let 
-    //         // TODO
-    //         let difference = copyCount;
-    //         while(difference != 0)
-    //         {
-    //             // To reach the number of character copies, for speed, combine two existing arrays 
-    //             // Find a source for highest number of copies.
-    //             let greaterSource = 0;
-    //             for(let iC = 0; iC < difference - 1; iC++)
-    //             {
-    //             }    
-    //             // Find a source for lowest number of copies.
-    //         }
-    //     }
-    //     return WishCalc.Data.CharacterDistribution[copyIndex];
-    // }
     
     // Set distribution for first weapon copy.
     WishCalc.GetFirstWeaponDistribution = function(startPulls = 0, featureGuarantee = false, epitomizedPath = 0)
@@ -328,8 +292,9 @@ if(true)
     }
     WishCalc.Data.WeaponDistribution = [ WishCalc.GetFirstWeaponDistribution(0, false, 0) ];
 
-    // Set distribution for first pair copy.
-    if(true)
+    // Pre-calculate distribution for first pair copy.
+    // Disabled while unused.
+    if(false)
     {
         let characterDistribution = WishCalc.Data.CharacterDistribution;
         let weaponDistribution = WishCalc.Data.WeaponDistribution;
@@ -361,7 +326,6 @@ if(true)
     // This function adds another copy to a distribution for weapon copies.
     // NOTE: This is not to add a weapon copy to any other type of distribution.
     WishCalc.Arrays.AddWeaponCopy = function(sourceDistribution) {
-        // console.log("Adding weapon copy with length, \"" + String(sourceDistribution.length + WishCalc.Data.WeaponPullLimit[0]) + "\"");
         let result = Array(sourceDistribution.length + WishCalc.Data.WeaponPullLimit[0])
         
         for(let iP = 0; iP < result.length; iP++) result[iP] = 0.0;

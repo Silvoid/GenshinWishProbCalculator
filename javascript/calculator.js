@@ -8,51 +8,6 @@
 //     Normally, these argument validations may be unnecessary, but there was a push towards providing some ease in using this independently,
 //     such as just calling the functions through the browser console instead of through the user interface.
 
-WishCalc.Direct = { };
-
-
-
-WishCalc.Direct.GetSpecificChance = function(targetCon, targetRef, targetPull)
-{
-	if(targetPull < 1) return 0;
-	if(targetCons > 0 && targetRefs > 0)
-		return WishCalc.Data.PairDistribution[targetCon][targetRef][targetPull];
-	if(targetCons > 0) return WishCalc.Data.CharacterDistribution[targetCon];
-	if(targetRefs > 0) return WishCalc.Data.WeaponDistribution[targetPull];
-}
-
-WishCalc.GetSpecificChance = function(args)
-{
-	let targetCons = 0;
-	let targetRefs = 0;
-	let targetPull = 0;
-	let vArgs = {};
-	
-	// Validating arguments.
-	if(args && WishCalc.Utilities.IsObject(args) && args.BypassArgumentsValidation !== true)
-	{
-		vArgs = {
-			Target: {
-				Character: 0,
-				Weapon:    0,
-				Pull:      0
-			}
-		}
-		WishCalc.Utilities.ValidateArguments(args, vArgs);
-		targetCons = vArgs.Target.Character;
-		targetRefs = vArgs.Target.Weapon;
-		targetPull = vArgs.Target.Pull - 1;
-	}
-	else
-	{
-		targetCons = args.Target.Character;
-		targetRefs = args.Target.Weapon;
-		targetPull = args.Target.Pull - 1;
-	}
-
-	return WishCalc.Direct.GetSpecificChance(targetCons, targetRefs, targetPull);
-}
-
 
 
 WishCalc.GetInputs = function()
@@ -180,6 +135,7 @@ WishCalc.ValidateCalculationArgs = function(args)
 	input.Pity.Character = Math.min(89, Math.max(0, args.Pity.Character));
 	input.Pity.Weapon    = Math.min(76, Math.max(0, args.Pity.Weapon));
 	input.Pity.Radiance  = Math.min(3,  Math.max(0, args.Pity.Radiance));
+	input.EpitomizedPath = Math.min(1,  Math.max(0, args.EpitomizedPath));
 
 	input.Pulls = Math.floor(input.Pulls.Primogems / 160) + Math.floor(input.Pulls.IntertwinedFates) + Math.floor(input.Pulls.Starglitter / 5);
 	input.Pulls = Math.min(args.Target.Character * 180 + args.Target.Weapon * 154, Math.max(0, input.Pulls));
@@ -196,7 +152,7 @@ WishCalc.Calculate = function(args)
     args = WishCalc.ValidateCalculationArgs(args);
 	let result = { Args: args };
 
-	// Do checks if the inputs are right, and output something.
+	// Do checks if the inputs are right, and output something if not.
 	if(args.Pulls < args.Target.Character + args.Target.Weapon)
 	{
 		result.Invalidation = `${WishCalc.Style.Number(args.Pulls, "pull")} for ${args.Target.Character + args.Target.Weapon} items is not enough.`;
@@ -213,12 +169,14 @@ WishCalc.Calculate = function(args)
 		return result;
 	}
 	
-	// Get first distribution.
+	// Get the first distribution, with character and weapon copies separated.
 	let firstDistribution = { };
 	if(args.Target.Character > 0)
 	{
 		// Calculate character distribution.
 		firstDistribution.Character = WishCalc.GetFirstCharacterDistribution(args.Pity.Character, args.Guarantee.Character, args.Pity.Radiance);
+		
+		// Just keep adding as needed.
 		for(let iCa = 1; iCa < args.Target.Character; iCa++)
 			firstDistribution.Character = WishCalc.Arrays.AddCharacterCopy(firstDistribution.Character[0].length, firstDistribution.Character);
 	}
@@ -234,7 +192,7 @@ WishCalc.Calculate = function(args)
 	let weaponPullLimit    = firstDistribution.Weapon    != null ? firstDistribution.Weapon.length : 0;
 	let pairPullLimit      = characterPullLimit + weaponPullLimit;
 
-	// Get result.
+	// Get result, perhaps by combining the character and weapon distributions.
 	result.Result = 0.0;
 	if(args.Target.Character > 0 && args.Target.Weapon > 0)
 	{
@@ -325,11 +283,11 @@ WishCalc.DisplayResult = function(result)
 	let description = "";
 	if(result.Args.Target.Character > 0)
 	{
-		description = "Currently on the character banner, "
+		description = "Starting the character banner with "
 		+ result.Args.Pity.Character
-		+ " pity for the next five star, has "
+		+ " pity for the next five star, "
 		+ result.Args.Pity.Radiance
-		+ " counts for radiance. "
+		+ " radiance pity, and "
 		+ (result.Args.Guarantee.Character ? "is" : "is not")
 		+ " guaranteed the 50/50. ";
 	}
@@ -339,12 +297,12 @@ WishCalc.DisplayResult = function(result)
 		{
 			description = "";
 		}
-		description += "Currently on the weapon banner, "
+		description += "Starting the weapon banner with "
 		+ result.Args.Pity.Weapon + " pity, "
 		+"\""
 		+ (result.Args.EpitomizedPath == 1 ? "1/1" : "0/1")
 		+ "\" on the epitomized path"
-		+ (result.Args.EpitomizedPath == 1 ? ". " : (", and there " + (result.Args.Guarantee.Weapon == true ? "is a" : "is no" ) + " guarantee for a featured weapon. "));
+		+ (result.Args.EpitomizedPath == 1 ? ". " : (", and " + (result.Args.Guarantee.Weapon == true ? "with" : "without" ) + " a guarantee for a featured weapon. "));
 	}
 	description += WishCalc.Utilities.Commas(result.Args.Pulls) + " single pull" + (result.Args.Pulls == 1 ? " has" : "s have") + " a " + resultString + " chance for success at ";
 	if(result.Args.Target.Character > 0)

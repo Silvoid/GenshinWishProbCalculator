@@ -123,7 +123,6 @@
                         <!-- <img src="media/icons/external/info_black.svg" width="32" height="32" alt=""> -->
                     </button>
                 </div>
-                <span style="font-size: 0.7rem; text-align: center;">Calculation for something like C6R1 should take less than two seconds, but any further may take at least 4 seconds or way more.</span>
                 <span style="font-size: 0.7rem; text-align: center;">While calculating, the page may appear unresponsive.</span>
             </section>
         </section></div>
@@ -151,8 +150,10 @@
             </div>
             <div>
                 <h2>Notes</h2>
-                <p>While there would basically be no difference between "single pulls" and "multis (ten pulls)", by technicality, the target selector for five-star characters is actually just "the number of limited (featured) five-star characters to get", while there is no difference in chance between different limited five-star characters. This means that it actually does not specify which "limited five-star character" it is getting. It could be a combination of any limited five-star characters that sums up to that number, and as a "multi (ten pull)" risks resetting the "pity" mechanic by a few pulls on an unintended target, it is therefore deemed necessary enough to clarify that this calculator accounts for "single pulls", and not "multis". Related to this, the target selector for the weapon does not work like the character's, as the pity mechanic between the two is different. A significant part, specifically the epitomized path, of the weapon's pity mechanic can reset too variably.</p>
-                <p>For the current version, this calculator does not account for "return wishes", wherein "starglitter" can be acquired from pulling, and be exchanged for more pulls to be done for the target(s).</p>
+                <p>This calculator accounts for "single pulls", and not "multis (ten pulls)". With the mechanics, there is effectively no difference to the calculator in chance between going for, for example, C0 Mualani + C0 Kinich + C0 Xilonen (3 five stars) versus C2 Xilonen (3 five stars). In other words, while the target character copies selector is displayed as "go from constellation number to constellation number", it actually functions as "go from number of character copies to number of character copies", which means it would be solving for both scenarios of (a) going for multiple copies of just one character, and (b) any combination of multiple copies of different characters adding up to that number. However, for the latter scenario, there may be a slight difference in the actual chance as a real player is likely to do multis and not single pulls, where the calculator would be predicting for some ideal combination, while ten pulls could throw a few pulls off course.</p>
+                <p>The weapon banner does not have the same "luxury" as the character banner with being able to also solve for getting from different banners. A significant part, specifically the epitomized path, of the weapon's pity mechanic can reset too variably.</p>
+                <p>The calculator considers radiance to work as such: radiance pity goes up by one when 50/50 is lost, and it resets to zero when it's won. When a 50/50 is lost at 0/1/2/3 radiance pity, 0%/10%/50%/100% chance for it to turn into a win.</p>
+                <p>For the current version, this calculator does not automatically account for "return wishes", wherein "starglitter" can be acquired from pulling, and be exchanged for more pulls to be done for the target(s).</p>
                 <p>Per technical limitations, the calculator loses accuracy as a chance becomes less and less likely. Specifically, its result will be rounded to 12 decimal places (in decimal, non-percent form). This means to say that something with 1 in a trillion or less likely odds will probably just be rounded to zero.</p>
                 <p>The calculator has some set bounds for setting inputs to the necessary minimum or maximum.</p>
             </div>
@@ -187,7 +188,6 @@
 	
 	<!-- scripts -->
 	<script src="javascript/generic.js"></script>
-	<script src="javascript/data.js"></script>
 	<script src="javascript/style.js"></script>
 	<script src="javascript/initiation.js"></script>
 	<script src="javascript/calculator.js"></script>
