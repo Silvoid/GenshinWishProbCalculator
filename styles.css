@@ -71,6 +71,11 @@ p
     line-height: calc(1em + 8px);
 }
 
+ul, li
+{
+    padding-left: 1rem;
+}
+
 
 
 .icon-input
@@ -235,9 +240,8 @@ input, select, button
     text-align: justify;
 }
 
-.wc-info-block p
+.wc-info-block p, .wc-info-block li
 {
-    margin: 0.5rem 0px;
     text-indent: 2rem;
 }
 
