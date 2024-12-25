@@ -66,9 +66,9 @@ a, a:visited
     color: var(--color-link);
 }
 
-p
+h1, h2, p, li
 {
-    line-height: calc(1em + 8px);
+    line-height: calc(1em + 4px);
 }
 
 ul, li
@@ -237,17 +237,29 @@ input, select, button
     border: 2px solid var(--color-e);
     padding: 0.5rem;
     display: grid;
-    text-align: justify;
+    /* text-align: justify; */
 }
 
-.wc-info-block p, .wc-info-block li
+.wc-info-block p
 {
     text-indent: 2rem;
 }
 
-.wc-info-block h2:not(:first-child)
+.wc-info-block li
 {
-    margin-top: 2rem;
+    margin-top: 0.5rem;
+    margin-left: 1rem;
+    text-align: left;
+}
+
+.wc-info-block div.with-upper-margin
+{
+    margin-top: 1rem;
+}
+
+.wc-info-block div.with-lower-margin
+{
+    margin-bottom: 1rem;
 }
 
 @media screen and (max-width: 700px) {

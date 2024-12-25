@@ -131,15 +131,15 @@
             <div style="display: flex; justify-content: center;">
                 <button id="button-wc-to-main">Back to calculator</button>
             </div>
-            <h2>What is this, and how does this work?</h2>
-            <p>
-                This is a calculator for probabilities of successfully acquiring a target number of featured/limited five-star characters, and/or featured/limited five-star weapons from wishing in the game, Genshin Impact.
-            </p>
-            <p>
-                In a nutshell, this calculator can be compared to a simulator in terms of getting results, but without the random number generation, as it just iterates through the combinations/permutations of percentages (chances), multiplying and adding accordingly.
-                Per this distinction, this should qualify as a calculator rather than a simulator. While "wishing for 5-stars" has a limit that is not too large, it is thus faster, and more accurate.
-                Would you like <a id="wc-workings-info-verbose-link" href="#wc-workings-info-verbose">a more verbose answer</a>?
-            </p>
+            <div>
+                <h2>What is this, and how does this work?</h2>
+                <p>
+                    This is a calculator for probabilities of successfully acquiring a target number of featured/limited five-star characters, and/or featured/limited five-star weapons from wishing in the game, Genshin Impact.
+                    In a nutshell, this calculator can be compared to a simulator in terms of getting results, but without the random number generation, as it just iterates through the combinations/permutations of percentages (chances), multiplying and adding accordingly.
+                    Per this distinction, this should qualify as a calculator rather than a simulator. While "wishing for 5-stars" has a limit that is not too large, it is thus faster, and more accurate.
+                    Would you like <a id="wc-workings-info-verbose-link" href="#wc-workings-info-verbose">a more verbose answer</a>?
+                </p>
+            </div>
             <div id="wc-workings-info-verbose" style="display: none;">
                 <h3>A more verbose, though not complete, description:</h3>
                 <p>An essential idea used for this calculator is "x*y=z" where x is the probability to acquire something specifically on "pull count A", y is the probability to acquire something specifically on "pull count B", and z is the probability to acquire something on the total pull count ("pull count A" + "pull count B") through that permutation of the pull counts. Since there are multiple pairings of pull counts that add up to the pull count of z, it would have to process a summation of all the possible permutations to get the total probability for that pull count.</p>
@@ -148,29 +148,35 @@
                 <p>The process for featured five-star weapon probabilities, though a bit more complex, has just about the same (non-exhaustive) description.</p>
                 <p>If there are both more than zero copies to get on featured five-star characters, and specific featured five-star weapons, there'll be two distributions for the first copy of each, which will be combined, before going through the predefined set of data.</p>
             </div>
-            <div>
+            <div class="with-upper-margin">
                 <h2>Notes</h2>
-                <p>This calculator accounts for "single pulls", and not "multis (ten pulls)". With the mechanics, there is effectively no difference to the calculator in chance between going for, for example, C0 Mualani + C0 Kinich + C0 Xilonen (3 five stars) versus C2 Xilonen (3 five stars). In other words, while the target character copies selector is displayed as "go from constellation number to constellation number", it actually functions as "go from number of character copies to number of character copies", which means it would be solving for both scenarios of (a) going for multiple copies of just one character, and (b) any combination of multiple copies of different characters adding up to that number. However, for the latter scenario, there may be a slight difference in the actual chance as a real player is likely to do multis and not single pulls, where the calculator would be predicting for some ideal combination, while ten pulls could throw a few pulls off course.</p>
-                <p>The weapon banner does not have the same "luxury" as the character banner with being able to also solve for getting from different banners. A significant part, specifically the epitomized path, of the weapon's pity mechanic can reset too variably.</p>
-                <p>The calculator considers radiance to work as such: radiance pity goes up by one when 50/50 is lost, and it resets to zero when it's won. When a 50/50 is lost at 0/1/2/3 radiance pity, 0%/5%/50%/100% chance for the loss to turn into a win (or a total of 50%/52.5%/75%/100% chance to win the 50/50). <a href="https://www.reddit.com/r/Genshin_Impact/comments/1flac9n/capturing_radiance_theory_and_observations_to_date/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button">Reference</a>.</p>
-                <p>At the time of writing this, there appears to be a <a href="https://www.reddit.com/r/Genshin_Impact/comments/1hd1sqa/understanding_genshin_impacts_capturing_radiance/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button">newer model</a> the calculator doesn't operate under. While its implementation is possible and may be, not sure, a rather simple modification to the calculator, that model is yet to completely provide the chances of winning from each count for radiance. For now, it's not such a high priority as it could just be a less than 0.1% difference in result for the calculator, because of how statistics average out over higher iterations. Its most important difference however is what the user should input as their pity for radiance. If you do not understand that model, but believe it more, and don't have a way to so easily find your pity for it, it is recommended to just input zero as your radiance pity, and just treat the radiance happening as a lucky happenstance, or input three if you lost three 50/50s in a row.</p>
-                <p>For the current version, this calculator does not automatically account for "return wishes", wherein "starglitter" can be acquired from pulling, and be exchanged for more pulls to be done for the target(s).</p>
-                <p>Per technical limitations, the calculator loses accuracy as a chance becomes less and less likely. Specifically, its result will be rounded to 12 decimal places (in decimal, non-percent form). This means to say that something with 1 in a trillion or less likely odds will probably just be rounded to zero.</p>
-                <p>The calculator has some set bounds for setting inputs to the necessary minimum or maximum.</p>
+                <ul>
+                    <li>This calculator accounts for "single pulls", and not "multis (ten pulls)". With the mechanics, there is effectively no difference to the calculator in chance between going for, for example, C0 Mualani + C0 Kinich + C0 Xilonen (3 five stars) versus C2 Xilonen (3 five stars). In other words, while the target character copies selector is displayed as "go from constellation number to constellation number", it actually functions as "go from number of character copies to number of character copies", which means it would be solving for both scenarios of (a) going for multiple copies of just one character, and (b) any combination of multiple copies of different characters adding up to that number. However, for the latter scenario, there may be a slight difference in the actual chance as a real player is likely to do multis and not single pulls, where the calculator would be predicting for some ideal combination, while ten pulls could throw a few pulls off course.</li>
+                    <li>The weapon banner does not have the same "luxury" as the character banner with being able to also solve for getting from different banners. A significant part, specifically the epitomized path, of the weapon's pity mechanic can reset too variably.</li>
+                    <li>The calculator considers radiance to work as such: radiance pity goes up by one when 50/50 is lost, and it resets to zero when it's won. When a 50/50 is lost at 0/1/2/3 radiance pity, 0%/5%/50%/100% chance for the loss to turn into a win (or a total of 50%/52.5%/75%/100% chance to win the 50/50). <a href="https://www.reddit.com/r/Genshin_Impact/comments/1flac9n/capturing_radiance_theory_and_observations_to_date/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button">Reference</a>.</li>
+                    <li>At the time of writing this, there appears to be a <a href="https://www.reddit.com/r/Genshin_Impact/comments/1hd1sqa/understanding_genshin_impacts_capturing_radiance/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button">newer model</a> the calculator doesn't operate under. While its implementation is possible and may be, not sure, a rather simple modification to the calculator, that model is yet to completely provide the chances of winning from each count for radiance. For now, it's not such a high priority as it could just be a less than 0.1% difference in result for the calculator, because of how statistics average out over higher iterations. Its most important difference however is what the user should input as their pity for radiance. If you do not understand that model, but believe it more, and don't have a way to so easily find your pity for it, it is recommended to just input zero as your radiance pity, and just treat the radiance happening as a lucky happenstance, or input three if you lost three 50/50s in a row.</li>
+                    <li>For the current version, this calculator does not automatically account for "return wishes", wherein "starglitter" can be acquired from pulling, and be exchanged for more pulls to be done for the target(s).</li>
+                    <li>Per technical limitations, the calculator loses accuracy as a chance becomes less and less likely. Specifically, its result will be rounded to 12 decimal places (in decimal, non-percent form). This means to say that something with 1 in a trillion or less likely odds will probably just be rounded to zero.</li>
+                    <li>The calculator has some set bounds for setting inputs to the necessary minimum or maximum.</li>
+                </ul>
             </div>
-            <div>
+            <div class="with-upper-margin">
                 <h2>Github Repository</h2>
                 <p>
                     This calculator's files are posted on Github. You may see the files (and code) in <a href="https://github.com/Silvoid/GenshinWishProbCalculator">the github repository</a>.
                     If issues are found, it should be possible to post in <a href="https://github.com/Silvoid/GenshinWishProbCalculator/issues">the issues section</a>.
                 </p>
             </div>
-            <div>
+            <div class="with-upper-margin with-lower-margin">
                 <h2>Sources Of Information</h2>
                 <p>
                     This calculator was made based on information from
 					<a href="https://www.hoyolab.com/article/497840">an article by genshin-wishes.com on hoyolab</a>,
-					and <a href="https://genshin-impact.fandom.com/wiki/Wishes">a page on the fandom wiki.</a>
+					and <a href="https://genshin-impact.fandom.com/wiki/Wishes">a page on the fandom wiki</a>.
+                    With the introduction of radiance on the character banner,
+                    the model this calculator currently operates under was developed with <a href="https://youtu.be/3SyEcGFUpwY?si=xWpZan1wbSbuRYIx">this video</a>
+                    and <a href="https://www.reddit.com/r/Genshin_Impact/comments/1flac9n/capturing_radiance_theory_and_observations_to_date/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button">this later post</a>
+                    in mind.
                 </p>
             </div>
             <div>
